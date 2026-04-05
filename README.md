@@ -3,6 +3,7 @@ Website ini memfasilitasi setiap anggota UKM Bengawan UV untuk dapat bekerja sec
 ## Anggota Kelompok
 | Nama | NIM | Role |
 | Andre Saputra | L0124038 | Front End Developer |
+| Lutfiyah Istiana | L0124022 | Project Manager & Quality Assurance |
 ## Fitur Utama
 1. Perencanaan timeline project 
 2. Materi pelatihan anggota baru 
