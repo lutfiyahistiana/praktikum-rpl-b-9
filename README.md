@@ -2,6 +2,7 @@
 Website ini memfasilitasi setiap anggota UKM Bengawan UV untuk dapat bekerja secara terstruktur. Selain itu, website ini dapat memudahkan anggota baru dalam beradaptasi di UKM.
 ## Anggota Kelompok
 | Nama | NIM | Role |
+| Lutfiyah Istiana | L0124022 | Project Manager & Quality Assurance |
 ## Fitur Utama
 1. Perencanaan timeline project 
 2. Materi pelatihan anggota baru 
