@@ -1,4 +1,12 @@
-Deskripsi Umum
+1. Pendahuluan
+Software Requirements Specification (SRS) ini disusun untuk mendefinisikan secara lengkap seluruh spesifikasi kebutuhan aplikasi manajemen tim berbasis web yang terintegrasi dengan AI Chatbot. Dokumen ini dibuat sebagai acuan utama untuk seluruh bagian yang terlibat dalam aplikasi ini seperti developer, tim manajemen robotika, ketua tim, pelatih, dan anggota dalam proses perancangan, pengembangan, dan pengujian sistem. Dengan adanya SRS ini, diharapkan fungsionalitas sistem yang dibangun dapat secara tepat menyelesaikan masalah komunikasi, alur kerja yang tidak terorganisir, serta mengamankan materi perlatihan agar ekslusif untuk internal UKM robotika.
+Sistem ini merupakan sebuah platform manajemen tim yang berfungsi sebagai pusat kendali tugas dan penyimpanan materi. Sistem ini dirancang secara fleksibel agar dapat digunakan dalam jangka panjang meskipun terjadi pergantian pengurus atau pelatih, selain itu terdapat batasan pengguna yang membuat sistem ini tertutup hanya bisa diakses oleh pengguna di dalam lingkup internal robotika.
+Daftar definisi istilah:
+- Superadmin: Peran sistem tertinggi yang dipegang oleh developer, memiliki hak akses penuh terhadap semua role pengguna untuk keperluan manajemen darurat dan pemeliharaan sistem.
+- Admin: Pengguna yang merepresentasikan level manajerial yang berwenang memberikan dan membatasi hak akses setiap akun yang bergabung ke dalam sistem.
+- AI ChatBot: Fitur implementasi kecerdasan buatan yang disediakan untuk memudahkan mencari informasi materi dan menunjang dalam koordinasi tim, dengan batasan pemahaman pada konteks yang sederhana.
+
+2. Deskripsi Umum
 
 Aplikasi manajemen tim berbasis web ini dirancang untuk digunakan dalam lingkup internal UKM Robotika sebagai sistem terpusat dalam pengelolaan aktivitas tim. Fitur-fitur dari sistem ini mencangkup pengelolaan tugas, laporan progres tugas, dan penyimpanan materi. Sistem ini dibuat sebagai platform tertutup yang hanya dapat diakses oleh internal UKM Robotika. Dalam penggunaannya, setiap pengguna wajib melakukan registrasi untuk dapat mengakses sistem, proses validasi akan dilakukan oleh tim developer untuk memastikan bahwa hanya anggota UKM yang dapat mengakses dan menjaga keamanan data dan materi dari pihak luar. Diberikan fitur AI ChatBot yang akan memudahkan pengguna dalam mencari informasi materi dan menunjang dalam koordinasi tim.
 
