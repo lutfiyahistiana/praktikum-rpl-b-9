@@ -36,3 +36,13 @@ Batasan dari aplikasi ini adalah
 - Sistem dikembangkan berbasis web yang tertaut dengan koneksi internet
 - Sistem hanya dapat digunakan oleh internal UKM Robotika
 - Keterbatasan AI ChatBot yang mungkin hanya memahami konteks sederhana
+
+
+5. Catatan
+
+    5.1. Hak akses <br>
+    Pengguna yang dapat memiliki hak akses adalah pengguna yang telah mendapatkan akun dari pihak manajemen UKM Robotika. Pengguna dengan akun tersebut hanya dapat mengakses hal-hal yang diizinkan untuk role pada akun tersebut.
+    
+    5.2. Sistem
+    - Sistem bergantung pada koneksi internet dan tidak ada fitur penggunaan secara offline.
+    - Sistem tidak bertanggung jawab atas validitas isi materi, melainkan hanya sebagai media penyimpanan dan distribusi.
