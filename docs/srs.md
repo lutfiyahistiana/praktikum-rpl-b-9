@@ -25,6 +25,12 @@ Karakteristik pengguna:
 - Pelatih berfokus pada pemberian materi dan kurikulum dari UKM Robotika.
 - Anggota Tim adalah pengguna yang dapat mengakses materi dan pengerjaan tugas yang telah diberikan.
 
+4. Kebutuhan Non-Fungsional
+NFR-01 (Security): Password akun disimpan menggunakan hashing bcrypt.
+NFR-02 (Usability): UI responsif dapat digunakan pada perangkat mobile maupun dekstop.
+NFR-03 (Performance): Halaman load < 3 detik pada koneksi 4G standar.
+NFR-04 (Maintainability): Website menggunakan framework Laravel dan Tailwind CSS, serta MySQL untuk basis datanya dengan menggunakan gaya penulisan program yang telah disepakati.
+
 
 Batasan dari aplikasi ini adalah
 - Sistem dikembangkan berbasis web yang tertaut dengan koneksi internet
