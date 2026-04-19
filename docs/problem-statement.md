@@ -1,0 +1,4 @@
+# Problem Statement
+
+Anggota tim dan Ketua tim seringkali **mengalami kesulitan** dalam mengakses materi dan memantau tugas **ketika** situasi sedang padat, berada di lokasi yang berbeda, dan banyaknya grup chat sehingga informasi penting dapat tertimbun dan tidak terbaca. **Hal ini menyebabkan** terjadinya miskomunikasi dan alur kerja yang tidak terorganisir.
+**Solusi** dari masalah ini **berupa** aplikasi manajemen tim berbasis web dan terintegrasi dengan AI Chatbot yang **diharapkan dapat** membantu anggota tim maupun ketua tim sebagai tempat pusat kendali tugas dan penyimpanan materi sehingga dapat meningkatkan efisiensi dan akuntabilitas kerja tim.
