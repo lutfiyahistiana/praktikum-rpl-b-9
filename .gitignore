@@ -18,7 +18,7 @@ src/public_html/hot
 src/storage/*.key
 src/.env
 src/.env.*
-src/.env.example
+!src/.env.example
 src/Homestead.yaml
 src/Homestead.json
 src/.vagrant
