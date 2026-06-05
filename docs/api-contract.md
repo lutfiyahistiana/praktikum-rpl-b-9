@@ -89,6 +89,16 @@ Endpoint    |   POST /users
 
 **Role**
 
+**Get Role**
+Endpoint    |   GET /roles
+
+**Add Role**
+Endpoint    |   POST /users/{id_user}/roles
+
+**Delete Role**
+Endpoint    |   DELETE /users/{id_user/roles/{role_id}}
+
+
 Request Body
 {
     "name": "Shafa",
@@ -121,6 +131,7 @@ Endpoint    |   DELETE /users/{id_users}
 Endpoint    |   POST /tasks
 
     { 
+        "team_id": 1,
         "title": "Bab-1 Membuat Sensor", 
         "description": "Membuat modul sensor ultrasonik", 
         "assigned_to": 5, 
@@ -129,6 +140,7 @@ Endpoint    |   POST /tasks
 
 
     {
+    "team_id": 1,
     "title": "Bab-1 Membuat Sensor",
     "description": "Membuat modul sensor ultrasonik",
     "assigned_to": [5, 7, 10],
@@ -157,9 +169,8 @@ Endpoint    |   POST /tasks-progress
     "notes": "Progress pengerjaan sensor", 
     "percentage": 50 }
 
-
-
-//ambil persenannya bagaimana?
+**Lihat Progress**
+Endpoint    |   GET /tasks/{id_task}/progress
 
 
 **5. Material Management**
@@ -185,13 +196,17 @@ Endpoint    |   PUT /materials/{id_material}
 **Delete Material**
 Endpoint    |   DELETE /materials/{id_material}
 
+**Delete File**
+Endpoint    |   DELETE /material-files/{id_file}
+
+
 **6. Chatbot**
 
 **Create Session**
 Endpoint    |   POST /chatbot/session
 
 **Send Message**
-Endpoint    |   POST /chatbot/{sessin_id}//message
+Endpoint    |   POST /chatbot/{session_id}/message
 
 **Get Chat History**
 Endpoint    |   GET /chatbot/session/{session_id}
@@ -219,7 +234,7 @@ Endpoint    |   POST /teams
     }
 
 **Get All Teams**
-Endpoint    |   POST /teams
+Endpoint    |   GET /teams
 
     {
     "success": true,
@@ -238,14 +253,14 @@ Endpoint    |   POST /teams
         ]
     }
 
-**Add Team Member**
+**Get Team Member**
 Endpoint    |   POST /teams/{id_team}/members
 
     {
     "anggota_id": 3
     }
 
-**Add Team Detail**
+**GEt Team Detail**
 Endpoint    |   GET /teams/{id_team}
 
 **Update Team**
@@ -279,16 +294,25 @@ Endpoint    |   DELETE /teams/{id_team}/members/{id_user}
 **8. Division Management**
 
 **Create Division**
-Endpoint    |   GET /divisions
+Endpoint    |   POST /divisions
 
 **Update Divisions**
-Endpoint    |   UPDATE /divisions/{id_division}
+Endpoint    |   PUT /divisions/{id_division}
 
-**Get Divisions**
+**Get All Divisions**
 Endpoint    |   GET /divisions
+
+**Get Divisions Detail**
+Endpoint    |   GET /divisions/{id_division}
 
 **Delete Division**
 Endpoint    |   DELETE /divisions/{id_division}
 
 **Add Division Member**
 Endpoint    |   POST /divisions/{id_division}/members
+
+**Get Division Member**
+Endpoint    |   GET /divisions/{id_division}/members
+
+**Delete Division Member**
+Endpoint    |   DELETE /divisions/{id_division}/members/{id_user}
