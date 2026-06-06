@@ -22,4 +22,10 @@ Route::post('/login', [AuthController::class, 'prosesLogin']);
 
 Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
 Route::get('/materials', [MaterialController::class, 'showMaterials'])->name('materials');
+
 Route::get('/task', [TaskController::class, 'showTask'])->name('task');
+Route::get('/task/detail', function () {
+    return view('task.detail', [
+        'title' => 'Task Detail'
+    ]);
+});
