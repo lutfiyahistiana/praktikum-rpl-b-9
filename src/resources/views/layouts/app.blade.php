@@ -146,10 +146,12 @@
         </header>
 
         {{-- ========================== MAIN CONTENT ========================== --}}
-        <h1 class="h3 m-4 text-3xl text-colab-gray-dark">{{ $title }}</h1>
+        <div>
+            <h1 class="h3 m-4 sm:m-6 lg:m-8 text-3xl font-bold text-gray-900">{{ $title }}</h1>
 
-        {{-- Content injected --}}
-        @yield('content')
+            {{-- Content injected --}}
+            @yield('content')
+        </div>
     </div>
 
     {{-- ========================== FLOATING ACTION BUTTON (AI ChatBot) ========================== --}}
