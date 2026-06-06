@@ -20,6 +20,7 @@ export default {
                 'colab-blue-light':     '#3B82F6',
                 'colab-cyan':           '#38BDF8',
                 'colab-gray':           '#E6E6E6',
+                'colab-gray-dark':      '#7B7B7B',
                 'colab-gray-light':     '#F5F5F5',
                 'colab-input':          '#F9FAFB',
                 'card-blue':            '#1877F2',
