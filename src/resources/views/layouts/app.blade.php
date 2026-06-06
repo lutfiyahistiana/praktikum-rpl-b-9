@@ -87,7 +87,7 @@
                         </a>
                     </li>
                     {{-- Materials --}}
-                    <li>
+                    <li class="{{ $menuMaterials ?? ''}}">
                         <a href="/materials/anggota" class="flex items-center gap-3 px-3 rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
                             <img src="{{ asset('images/materials.png') }}" alt="Materials" class="w-14 h-14 object-contain">
                             <span>Materials</span>
