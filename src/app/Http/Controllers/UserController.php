@@ -59,6 +59,7 @@ class UserController extends Controller
 {
     $request->validate([
         'name'            => 'required|string|max:100',
+        'nim'             => 'nullable|string|max:20',
         'email'           => 'required|email|unique:users,email',
         'password'        => 'required|min:8',
         'roles'           => 'required|array',
@@ -73,6 +74,7 @@ class UserController extends Controller
         'name'            => $request->name,
         'email'           => $request->email,
         'password'        => Hash::make($request->password),
+        'nim'             => $request->nim,
         'created_by'      => $request->user()->id_user,
         'prodi'           => $request->prodi,
         'fakultas'        => $request->fakultas,
@@ -89,6 +91,7 @@ class UserController extends Controller
         'data' => [
             'id_user'         => $user->id_user,
             'name'            => $user->name,
+            'nim'             => $user->nim,
             'email'           => $user->email,
             'prodi'           => $user->prodi,
             'fakultas'        => $user->fakultas,
@@ -113,6 +116,7 @@ public function update(Request $request, $id)
 
     $request->validate([
         'name'            => 'sometimes|string|max:100',
+        'nim'             => 'sometimes|nullable|string|max:20',
         'email'           => 'sometimes|email|unique:users,email,' . $id . ',id_user',
         'password'        => 'sometimes|min:8',
         'prodi'           => 'sometimes|nullable|string|max:100',
@@ -122,6 +126,7 @@ public function update(Request $request, $id)
     ]);
 
     if ($request->has('name'))            $user->name = $request->name;
+    if ($request->has('nim'))             $user->nim = $request->nim;
     if ($request->has('email'))           $user->email = $request->email;
     if ($request->has('password'))        $user->password = Hash::make($request->password);
     if ($request->has('prodi'))           $user->prodi = $request->prodi;
@@ -137,6 +142,7 @@ public function update(Request $request, $id)
         'data' => [
             'id_user'         => $user->id_user,
             'name'            => $user->name,
+            'nim'             => $user->nim,
             'email'           => $user->email,
             'prodi'           => $user->prodi,
             'fakultas'        => $user->fakultas,
