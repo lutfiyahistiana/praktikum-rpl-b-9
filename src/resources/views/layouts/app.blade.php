@@ -80,7 +80,7 @@
                         </a>
                     </li>
                     {{-- Task --}}
-                    <li>
+                    <li class="{{ $menuTask ?? ''}}">
                         <a href="/task/anggota" class="flex items-center gap-3 px-3  rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
                             <img src="{{ asset('images/task.png') }}" alt="Task" class="w-14 h-14 object-contain">
                             <span>Task</span>
