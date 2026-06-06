@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\MaterialController;
 
 // Redirect root url ke halaman login
 Route::redirect('/', '/login');
@@ -19,3 +20,4 @@ Route::post('/login', [AuthController::class, 'prosesLogin']);
 // })->middleware('auth');
 
 Route::get('/dashboard', [DashboardController::class, 'showDashboard'])->name('dashboard');
+Route::get('/materials', [MaterialController::class, 'showMaterials'])->name('materials');
