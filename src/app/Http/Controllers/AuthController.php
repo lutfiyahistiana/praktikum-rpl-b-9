@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\TeamMember;
+use App\Models\DivisionMember;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -99,15 +101,30 @@ class AuthController extends Controller
     {
         $user = $request->user()->load('roles');
 
+        $team = TeamMember::with('team')
+            ->where('anggota_id', $user->id_user)
+            ->first();
+
+        $division = DivisionMember::with('division')
+            ->where('anggota_id', $user->id_user)
+            ->first();
+
         return response()->json([
             'success' => true,
             'message' => 'Data profile berhasil diambil',
             'data' => [
-                'id_user' => $user->id_user,
-                'name' => $user->name,
-                'email' => $user->email,
-                'roles' => $user->roles->pluck('role_name'),
-                'active_role' => $request->user()->currentAccessToken()->name
+                'id_user'         => $user->id_user,
+                'name'            => $user->name,
+                'nim'             => $user->nim,
+                'email'           => $user->email,
+                'prodi'           => $user->prodi,
+                'fakultas'        => $user->fakultas,
+                'no_hp'           => $user->no_hp,
+                'username_github' => $user->username_github,
+                'tim'             => $team ? $team->team->team_name : null,
+                'divisi'          => $division ? $division->division->division_name : null,
+                'roles'           => $user->roles->pluck('role_name'),
+                'active_role'     => $request->user()->currentAccessToken()->name,
             ]
         ]);
     }
@@ -128,7 +145,6 @@ class AuthController extends Controller
             ], 403);
         }
 
-        // Hapus token lama, buat token baru dengan nama role aktif
         $request->user()->currentAccessToken()->delete();
         $token = $user->createToken($request->role)->plainTextToken;
 

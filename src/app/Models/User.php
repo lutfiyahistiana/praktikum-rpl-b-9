@@ -15,11 +15,16 @@ class User extends Authenticatable
     protected $primaryKey = 'id_user';
 
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'created_by',
-    ];
+    'name',
+    'nim',
+    'email',
+    'password',
+    'created_by',
+    'prodi',
+    'fakultas',
+    'no_hp',
+    'username_github',
+];
 
     protected $hidden = [
         'password',
