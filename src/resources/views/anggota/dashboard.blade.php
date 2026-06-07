@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('anggota.layouts.app')
 
 @section('content')
     {{-- ========================== MAIN CONTENT ========================== --}}

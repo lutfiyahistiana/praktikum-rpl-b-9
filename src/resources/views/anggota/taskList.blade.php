@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('anggota.layouts.app')
 
 @section('content')
 <main class="flex-1 mb-4 sm:mb-6 lg:mb-8 mx-4 sm:mx-6 lg:mx-8 space-y-6">

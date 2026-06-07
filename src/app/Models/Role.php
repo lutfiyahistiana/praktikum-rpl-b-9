@@ -19,4 +19,17 @@ class Role extends Model
             'id_role', 
             'id_user');
     }
+
+    public static function label(string $roleName): string
+    {
+        return match($roleName) {
+            'superadmin'  => 'Super Admin',
+            'admin'       => 'Admin',
+            'ketua_tim'   => 'Ketua Tim',
+            'pelatih'     => 'Pelatih',
+            'anggota_tim' => 'Anggota Tim',
+            default       => ucfirst($roleName),
+        };
+    }
+
 }

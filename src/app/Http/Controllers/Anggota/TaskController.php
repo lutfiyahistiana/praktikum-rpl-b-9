@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Anggota;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -12,6 +13,6 @@ class TaskController extends Controller
             'title'    => 'Task',
             'menuTask' => 'active'
         );
-        return view('task.anggota', $data);
+        return view('anggota.taskList', $data);
     }
 }

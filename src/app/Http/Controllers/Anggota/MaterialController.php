@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Anggota;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class MaterialController extends Controller
@@ -12,6 +13,6 @@ class MaterialController extends Controller
             'title'         => 'Materials',
             'menuMaterials' => 'active'
         );
-        return view('materials.anggota', $data);
+        return view('anggota.materials', $data);
     }
 }

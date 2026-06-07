@@ -66,30 +66,27 @@
                 <h2 class="px-2 mb-2 text-xs font-semibold text-gray-900 uppercase tracking-wider">Menu</h2>
                 <ul class="space-y-1">
                     {{-- Dashboard --}}
-                    <li class="{{ $menuDashboard ?? ''}}">
-                        <a href="#" class="flex items-center gap-3 px-3 rounded-lg text-sm font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue hover:bg-blue-50 transition-colors">
-                            <img src="{{ asset('images/dashboard-active.png') }}" alt="Dashboard" class="w-14 h-14 object-contain">
-                            <span>Dasboard</span>
-                        </a>
-                    </li>
-                    {{-- Manage Role --}}
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-3 rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
-                            <img src="{{ asset('images/manage.png') }}" alt="Manage Role" class="w-14 h-14 object-contain">
-                            <span>Manage role</span>
+                        <a href="/dashboard"
+                            class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
+                                {{ request()->is('dashboard')
+                                    ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
+                                    : 'text-gray-500 hover:bg-colab-gray-light' }}">
+                            <img src="{{ asset(request()->is('/dashboard') ? 'images/dashboard-active.png' : 'images/dashboard.png') }}"
+                                alt="Dashboard" class="w-14 h-14 object-contain">
+                            <span>Dashboard</span>
                         </a>
                     </li>
-                    {{-- Task --}}
-                    <li class="{{ $menuTask ?? ''}}">
-                        <a href="/task/anggota" class="flex items-center gap-3 px-3  rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
-                            <img src="{{ asset('images/task.png') }}" alt="Task" class="w-14 h-14 object-contain">
-                            <span>Task</span>
-                        </a>
-                    </li>
+
                     {{-- Materials --}}
-                    <li class="{{ $menuMaterials ?? ''}}">
-                        <a href="/materials/anggota" class="flex items-center gap-3 px-3 rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
-                            <img src="{{ asset('images/materials.png') }}" alt="Materials" class="w-14 h-14 object-contain">
+                    <li>
+                        <a href="/materials"
+                            class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
+                                {{ request()->is('materials*')
+                                    ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
+                                    : 'text-gray-500 hover:bg-colab-gray-light' }}">
+                            <img src="{{ asset(request()->is('materials*') ? 'images/materials-active.png' : 'images/materials.png') }}"
+                                alt="Materials" class="w-14 h-14 object-contain">
                             <span>Materials</span>
                         </a>
                     </li>
@@ -122,7 +119,8 @@
             <div class="hidden lg:block"></div>
 
             {{-- User Profile --}}
-            <div class="flex items-center gap-3 ml-auto">
+            <div class="relative flex items-center gap-3 ml-auto" x-data="{ open: false }">
+
                 {{-- Avatar --}}
                 <div class="w-10 h-10 rounded-full bg-colab-gray flex items-center justify-center overflow-hidden flex-shrink-0">
                     <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
@@ -131,17 +129,71 @@
                 </div>
 
                 {{-- Name & Role --}}
+                @php
+                    $activeRoleName = session('active_role') ?? auth()->user()->roles->first()->role_name ?? null;
+                    $activeRoleLabel = $activeRoleName ? \App\Models\Role::label($activeRoleName) : '-';
+                @endphp
+
                 <div class="hidden sm:block">
-                    <p class="text-sm font-bold text-gray-900 leading-tight">Ihza Dzikrullah</p>
-                    <p class="text-xs text-gray-400 leading-tight">Anggota</p>
+                    <p class="text-sm font-bold text-gray-900 leading-tight">{{ auth()->user()->name }}</p>
+                    <p class="text-xs text-gray-400 leading-tight">{{ $activeRoleLabel }}</p>
                 </div>
 
                 {{-- Dropdown chevron --}}
-                <button class="p-1 rounded hover:bg-colab-gray-light transition-colors" aria-label="User Menu">
-                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button @click="open = !open"
+                    class="p-1 rounded hover:bg-colab-gray-light transition-colors" aria-label="User Menu">
+                    <svg class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                        :class="{ 'rotate-180': open }"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </button>
+
+                {{-- Dropdown Menu --}}
+                <div x-show="open"
+                    @click.outside="open = false"
+                    x-transition
+                    class="absolute right-0 top-14 w-56 bg-white rounded-xl shadow-lg border border-gray-100 z-50 overflow-hidden">
+
+                    {{-- Email --}}
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
+                    </div>
+
+                    {{-- Hak Akses — tampil meski hanya 1 role --}}
+                    <div class="border-b border-gray-100">
+                        <p class="px-4 py-2 text-xs font-bold text-white bg-gray-400 text-center">Hak Akses</p>
+
+                        @foreach(auth()->user()->roles as $role)
+                            @if($role->role_name === $activeRoleName)
+                                {{-- Role aktif — tidak bisa diklik --}}
+                                <div class="w-full text-center px-4 py-3 text-sm font-bold text-colab-blue bg-blue-50 border-b border-gray-100">
+                                    {{ \App\Models\Role::label($role->role_name) }}
+                                    <span class="text-xs font-normal text-gray-400 block">aktif</span>
+                                </div>
+                            @else
+                                {{-- Role lain — bisa switch --}}
+                                <form method="POST" action="{{ route('switch.role') }}">
+                                    @csrf
+                                    <input type="hidden" name="role" value="{{ $role->role_name }}">
+                                    <button type="submit"
+                                        class="w-full text-center px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0">
+                                        {{ \App\Models\Role::label($role->role_name) }}
+                                    </button>
+                                </form>
+                            @endif
+                        @endforeach
+                    </div>
+
+                    {{-- Logout --}}
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                            Logout
+                        </button>
+                    </form>
+                </div>
             </div>
         </header>
 
@@ -192,5 +244,6 @@
             }
         });
     </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

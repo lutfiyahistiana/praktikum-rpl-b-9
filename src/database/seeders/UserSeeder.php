@@ -95,8 +95,7 @@ class UserSeeder extends Seeder
         $anggota = [
             ['name' => 'Muhammad Ihza Dzikrullah', 'email' => 'unihza@gmail.com',          'password' => 'muhihza123'],
             ['name' => 'Rafli Ahmad',              'email' => 'ahmadraplyy@gmail.com',      'password' => 'rafliahmad123'],
-            ['name' => 'Lutfiyah Istiana',         'email' => 'lutfiyahistiana@gmail.com',  'password' => 'lutfiyah123'],
-];
+        ];
 
         foreach ($anggota as $data) {
             $user = User::create([
@@ -109,6 +108,20 @@ class UserSeeder extends Seeder
             UserRole::create([
                 'id_user' => $user->id_user,
                 'id_role' => 5, // anggota_tim
+            ]);
+        }
+
+        $lutfiyah = User::create([
+            'name'       => 'Lutfiyah Istiana',
+            'email'      => 'lutfiyahistiana@gmail.com',
+            'password'   => Hash::make('lutfiyah123'),
+            'created_by' => $superadmin->id_user,
+        ]);
+
+        foreach ([1, 2, 3, 4, 5] as $roleId) {
+            UserRole::create([
+                'id_user' => $lutfiyah->id_user,
+                'id_role' => $roleId,
             ]);
         }
     }
