@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Dashboard Anggota - Colab, aplikasi manajemen tim kolaboratif.">
+    <meta name="description" content="Dashboard Admin - Colab, aplikasi manajemen tim kolaboratif.">
     <title>Colab | {{ $title }}</title>
 
     @vite('resources/css/app.css')
@@ -46,18 +46,31 @@
             <div class="mb-6">
                 <h2 class="px-2 mb-2 text-xs font-semibold text-gray-900 uppercase tracking-wider">Akun</h2>
                 <ul class="space-y-1">
+
+                    {{-- Profil --}}
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-3 rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
+                        <a href="{{ route('profil') }}"
+                            class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
+                                {{ request()->is('profil')
+                                    ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
+                                    : 'text-gray-500 hover:bg-colab-gray-light' }}">
                             <img src="{{ asset('images/person.png') }}" alt="Profil" class="w-14 h-14 object-contain">
                             <span>Profil</span>
                         </a>
                     </li>
+
+                    {{-- Logout --}}
                     <li>
-                        <a href="#" class="flex items-center gap-3 px-3 rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
-                            <img src="{{ asset('images/logout.png') }}" alt="Logout" class="w-14 h-14 object-contain">
-                            <span>Logout</span>
-                        </a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit"
+                                class="w-full flex items-center gap-3 px-3 rounded-lg text-sm text-gray-500 hover:bg-colab-gray-light transition-colors">
+                                <img src="{{ asset('images/logout.png') }}" alt="Logout" class="w-14 h-14 object-contain">
+                                <span>Logout</span>
+                            </button>
+                        </form>
                     </li>
+
                 </ul>
             </div>
 
@@ -67,51 +80,51 @@
                 <ul class="space-y-1">
                     {{-- Dashboard --}}
                     <li>
-                        <a href="/dashboard"
+                        <a href="{{ route('admin.dashboard') }}"
                             class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
-                                {{ request()->is('dashboard')
+                                {{ request()->is('admin/dashboard')
                                     ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
                                     : 'text-gray-500 hover:bg-colab-gray-light' }}">
-                            <img src="{{ asset(request()->is('/dashboard') ? 'images/dashboard-active.png' : 'images/dashboard.png') }}"
+                            <img src="{{ asset(request()->is('admin/dashboard') ? 'images/dashboard-active.png' : 'images/dashboard.png') }}"
                                 alt="Dashboard" class="w-14 h-14 object-contain">
                             <span>Dashboard</span>
                         </a>
                     </li>
 
-                    {{-- Manage Role --}}
-                    <li>
-                        <a href="/manage-role"
-                            class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
-                                {{ request()->is('manage-role*')
-                                    ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
-                                    : 'text-gray-500 hover:bg-colab-gray-light' }}">
-                            <img src="{{ asset(request()->is('manage-role*') ? 'images/manage-active.png' : 'images/manage.png') }}"
-                                alt="Manage Role" class="w-14 h-14 object-contain">
-                            <span>Manage Role</span>
-                        </a>
-                    </li>
-
                     {{-- Task --}}
                     <li>
-                        <a href="/task"
+                        <a href="{{ route('admin.task') }}"
                             class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
-                                {{ request()->is('task*')
+                                {{ request()->is('admin/task*')
                                     ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
                                     : 'text-gray-500 hover:bg-colab-gray-light' }}">
-                            <img src="{{ asset(request()->is('task*') ? 'images/task-active.png' : 'images/task.png') }}"
+                            <img src="{{ asset(request()->is('admin/task*') ? 'images/task-active.png' : 'images/task.png') }}"
                                 alt="Task" class="w-14 h-14 object-contain">
                             <span>Task</span>
                         </a>
                     </li>
 
-                    {{-- Materials --}}
+                    {{-- Task --}}
                     <li>
-                        <a href="/materials"
+                        <a href="{{ route('admin.manageRole') }}"
                             class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
-                                {{ request()->is('materials*')
+                                {{ request()->is('admin/manage-role*')
                                     ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
                                     : 'text-gray-500 hover:bg-colab-gray-light' }}">
-                            <img src="{{ asset(request()->is('materials*') ? 'images/materials-active.png' : 'images/materials.png') }}"
+                            <img src="{{ asset(request()->is('admin/manage-role*') ? 'images/manage-active.png' : 'images/manage.png') }}"
+                                alt="Task" class="w-14 h-14 object-contain">
+                            <span>Manage</span>
+                        </a>
+                    </li>
+
+                    {{-- Materials --}}
+                    <li>
+                        <a href="{{ route('admin.materials') }}"
+                            class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
+                                {{ request()->is('admin/materials*')
+                                    ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
+                                    : 'text-gray-500 hover:bg-colab-gray-light' }}">
+                            <img src="{{ asset(request()->is('admin/materials*') ? 'images/materials-active.png' : 'images/materials.png') }}"
                                 alt="Materials" class="w-14 h-14 object-contain">
                             <span>Materials</span>
                         </a>
@@ -186,19 +199,19 @@
                         <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email }}</p>
                     </div>
 
-                    {{-- Hak Akses — tampil meski hanya 1 role --}}
+                    {{-- Hak Akses tampil meski hanya 1 role --}}
                     <div class="border-b border-gray-100">
                         <p class="px-4 py-2 text-xs font-bold text-white bg-gray-400 text-center">Hak Akses</p>
 
                         @foreach(auth()->user()->roles as $role)
                             @if($role->role_name === $activeRoleName)
-                                {{-- Role aktif — tidak bisa diklik --}}
+                                {{-- Role aktif tidak bisa diklik --}}
                                 <div class="w-full text-center px-4 py-3 text-sm font-bold text-colab-blue bg-blue-50 border-b border-gray-100">
                                     {{ \App\Models\Role::label($role->role_name) }}
                                     <span class="text-xs font-normal text-gray-400 block">aktif</span>
                                 </div>
                             @else
-                                {{-- Role lain — bisa switch --}}
+                                {{-- Role lain bisa switch --}}
                                 <form method="POST" action="{{ route('switch.role') }}">
                                     @csrf
                                     <input type="hidden" name="role" value="{{ $role->role_name }}">
@@ -210,15 +223,6 @@
                             @endif
                         @endforeach
                     </div>
-
-                    {{-- Logout --}}
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="w-full text-left px-4 py-3 text-sm text-red-500 hover:bg-red-50 transition-colors">
-                            Logout
-                        </button>
-                    </form>
                 </div>
             </div>
         </header>

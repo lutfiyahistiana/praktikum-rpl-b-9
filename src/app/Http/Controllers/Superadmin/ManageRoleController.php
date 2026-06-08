@@ -10,7 +10,7 @@ class ManageRoleController extends Controller
     public function showManageRole()
     {
         $data = array(
-            'title'         => 'Dashboard',
+            'title'         => 'Manage Role',
             'menuDashboard' => 'active'
         );
         return view('superadmin.manageRole', $data);
