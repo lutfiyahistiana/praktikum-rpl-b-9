@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Controllers\Superadmin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+class ManageRoleController extends Controller
+{
+    public function showManageRole()
+    {
+        $data = array(
+            'title'         => 'Dashboard',
+            'menuDashboard' => 'active'
+        );
+        return view('superadmin.manageRole', $data);
+    }
+}
