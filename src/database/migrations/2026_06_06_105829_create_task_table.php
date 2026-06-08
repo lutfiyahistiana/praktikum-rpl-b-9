@@ -15,7 +15,10 @@ return new class extends Migration
             $table->unsignedBigInteger('assigned_to');
             $table->unsignedBigInteger('assigned_by');
             $table->dateTime('deadline')->nullable();
-            $table->enum('status', ['pending', 'in_progress', 'done'])->default('pending');
+            $table->enum('status', [
+                'belum_dikerjakan',
+                'selesai'
+            ]);
             $table->foreign('assigned_to')
                 ->references('id_user')
                 ->on('users')

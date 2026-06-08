@@ -21,7 +21,7 @@ return new class extends Migration
             ->references('id_material')
             ->on('materials')
             ->onDelete('cascade');
-        $table->timestamp('created_at')->useCurrent();
+        $table->timestamps();
     });
     }
 
