@@ -33,10 +33,10 @@ Route::prefix('pelatih')->name('pelatih.')->middleware(['auth', 'role:pelatih'])
 
 // Ketua Tim
 Route::prefix('ketua-tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_tim'])->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\Ketua\DashboardController::class,    'showDashboard'])->name('dashboard');
-    Route::get('/task',      [\App\Http\Controllers\Ketua\TaskController::class,          'showTask'])->name('task');
-    Route::get('/task/{id}', [\App\Http\Controllers\Ketua\TaskController::class,          'show'])->name('task.detail');
-    Route::get('/materials', [\App\Http\Controllers\Ketua\MaterialController::class,      'showMaterials'])->name('materials');
+    Route::get('/dashboard', [\App\Http\Controllers\KetuaTim\DashboardController::class,    'showDashboard'])->name('dashboard');
+    Route::get('/task',      [\App\Http\Controllers\KetuaTim\TaskController::class,          'showTask'])->name('task');
+    Route::get('/task/{id}', [\App\Http\Controllers\KetuaTim\TaskController::class,          'show'])->name('task.detail');
+    Route::get('/materials', [\App\Http\Controllers\KetuaTim\MaterialController::class,      'showMaterials'])->name('materials');
 });
 
 // Admin
