@@ -14,7 +14,7 @@ class ProfilController extends Controller
         $layout = match($activeRole) {
             'superadmin'  => 'superadmin.layouts.app',
             'admin'       => 'admin.layouts.app',
-            'ketua_tim'   => 'ketua_tim.layouts.app',
+            'ketua_tim'   => 'ketuaTim.layouts.app',
             'pelatih'     => 'pelatih.layouts.app',
             'anggota_tim' => 'anggota.layouts.app',
             default       => 'anggota.layouts.app',

@@ -15,6 +15,8 @@ Route::post('/switch-role',[AuthController::class, 'switchRoleWeb'])->name('swit
 // Profil semua role
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [\App\Http\Controllers\ProfilController::class, 'index'])->name('profil');
+    Route::post('/chatbot/send',   [\App\Http\Controllers\ChatbotController::class, 'sendMessage'])->name('chatbot.send');
+    Route::get('/chatbot/history', [\App\Http\Controllers\ChatbotController::class, 'getHistory'])->name('chatbot.history');
 });
 
 // Anggota Tim
