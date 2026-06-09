@@ -11,7 +11,7 @@ class MaterialController extends Controller
 {
     public function showMaterials()
     {
-        $materials = Material::with('uploadedBy')->get();
+        $materials = Material::with(['uploader', 'files'])->get();
 
         $data = array(
             'title'         => 'Materials',
