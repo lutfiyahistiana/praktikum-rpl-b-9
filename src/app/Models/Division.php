@@ -19,4 +19,9 @@ class Division extends Model
     {
         return $this->hasMany(DivisionMember::class, 'division_id', 'id_division');
     }
+
+    public function materials()
+    {
+        return $this->hasMany(Material::class, 'division_id', 'id_division');
+    }
 }

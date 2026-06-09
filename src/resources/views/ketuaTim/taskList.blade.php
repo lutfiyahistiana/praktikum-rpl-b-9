@@ -21,23 +21,14 @@
                     <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-5">Daftar Tugas Belum Selesai</h2>
 
                     <div class="space-y-4">
-                        {{-- Task Item 1 --}}
+                        @forelse ($unfinishedTasks as $task)
                         <div class="rounded-lg border bg-white p-4 hover:shadow-md transition-shadow duration-200 border-[#E6E6E6]">
-                            <p class="text-sm font-bold text-gray-900 mb-1">Nama Tugas</p>
-                            <p class="text-xs text-[var(--color-secondary)]">Nama Lengkap Penerima | Berjalan | Deadline: 1 Mei 2026</p>
+                            <p class="text-sm font-bold text-gray-900 mb-1">{{ $task['title'] }}</p>
+                            <p class="text-xs text-[var(--color-secondary)]">{{ $task['receiver'] }} | {{ $task['status'] }} | Deadline: {{ $task['deadline'] }}</p>
                         </div>
-
-                        {{-- Task Item 2 --}}
-                        <div class="rounded-lg border bg-white p-4 hover:shadow-md transition-shadow duration-200 border-[#E6E6E6]">
-                            <p class="text-sm font-bold text-gray-900 mb-1">Nama Tugas</p>
-                            <p class="text-xs text-[var(--color-secondary)]">Nama Lengkap Penerima | Berjalan | Deadline: 1 Mei 2026</p>
-                        </div>
-
-                        {{-- Task Item 3 --}}
-                        <div class="rounded-lg border bg-white p-4 hover:shadow-md transition-shadow duration-200 border-[#E6E6E6]">
-                            <p class="text-sm font-bold text-gray-900 mb-1">Nama Tugas</p>
-                            <p class="text-xs text-[var(--color-secondary)]">Nama Lengkap Penerima | Terlambat | Deadline: 1 Mei 2026</p>
-                        </div>
+                        @empty
+                        <p class="text-sm text-gray-500">Tidak ada tugas yang belum selesai.</p>
+                        @endforelse
                     </div>
                 </div>
             </section>
@@ -48,23 +39,14 @@
                     <h2 class="text-lg sm:text-xl font-bold text-gray-900 mb-5">Daftar Tugas Selesai</h2>
 
                     <div class="space-y-4">
-                        {{-- Task Item Selesai 1 --}}
+                        @forelse ($finishedTasks as $task)
                         <div class="rounded-lg border bg-white p-4 hover:shadow-md transition-shadow duration-200 border-[#E6E6E6]">
-                            <p class="text-sm font-bold text-gray-900 mb-1">Nama Tugas</p>
-                            <p class="text-xs text-[var(--color-secondary)]">Nama Lengkap Penerima | Berjalan | Deadline: 1 Mei 2026</p>
+                            <p class="text-sm font-bold text-gray-900 mb-1">{{ $task['title'] }}</p>
+                            <p class="text-xs text-[var(--color-secondary)]">{{ $task['receiver'] }} | {{ $task['status'] }} | Deadline: {{ $task['deadline'] }}</p>
                         </div>
-
-                        {{-- Task Item Selesai 2 --}}
-                        <div class="rounded-lg border bg-white p-4 hover:shadow-md transition-shadow duration-200 border-[#E6E6E6]">
-                            <p class="text-sm font-bold text-gray-900 mb-1">Nama Tugas</p>
-                            <p class="text-xs text-[var(--color-secondary)]">Nama Lengkap Penerima | Berjalan | Deadline: 1 Mei 2026</p>
-                        </div>
-
-                        {{-- Task Item Selesai 3 --}}
-                        <div class="rounded-lg border bg-white p-4 hover:shadow-md transition-shadow duration-200 border-[#E6E6E6]">
-                            <p class="text-sm font-bold text-gray-900 mb-1">Nama Tugas</p>
-                            <p class="text-xs text-[var(--color-secondary)]">Nama Lengkap Penerima | Terlambat | Deadline: 1 Mei 2026</p>
-                        </div>
+                        @empty
+                        <p class="text-sm text-gray-500">Tidak ada tugas yang selesai.</p>
+                        @endforelse
                     </div>
                 </div>
             </section>
