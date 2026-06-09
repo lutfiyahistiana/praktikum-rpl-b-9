@@ -16,9 +16,19 @@ class Material extends Model
         'title',
         'description',
         'uploaded_by',
+        'division_id'
     ];
 
-    public function uploadedBy()
+    public function division()
+    {
+        return $this->belongsTo(
+            Division::class,
+            'division_id',
+            'id_division'
+        );
+    }
+
+    public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by', 'id_user');
     }

@@ -40,10 +40,12 @@ Route::prefix('pelatih')->name('pelatih.')->middleware(['auth', 'role:pelatih'])
 
 // Ketua Tim
 Route::prefix('ketua-tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_tim'])->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\KetuaTim\DashboardController::class,    'showDashboard'])->name('dashboard');
-    Route::get('/task',      [\App\Http\Controllers\KetuaTim\TaskController::class,          'showTask'])->name('task');
-    Route::get('/task/{id}', [\App\Http\Controllers\KetuaTim\TaskController::class,          'show'])->name('task.detail');
-    Route::get('/materials', [\App\Http\Controllers\KetuaTim\MaterialController::class,      'showMaterials'])->name('materials');
+    Route::get('/dashboard',     [\App\Http\Controllers\KetuaTim\DashboardController::class, 'showDashboard'])->name('dashboard');
+    Route::get('/task',          [\App\Http\Controllers\KetuaTim\TaskController::class,       'showTask'])->name('task');
+    Route::get('/task/tambah',   [\App\Http\Controllers\KetuaTim\TaskController::class,       'tambah'])->name('task.tambah');
+    Route::post('/task/tambah',  [\App\Http\Controllers\KetuaTim\TaskController::class,       'store'])->name('task.store');
+    Route::get('/task/{id}',     [\App\Http\Controllers\KetuaTim\TaskController::class,       'show'])->name('task.detail');
+    Route::get('/materials',     [\App\Http\Controllers\KetuaTim\MaterialController::class,   'showMaterials'])->name('materials');
 });
 
 // Admin
@@ -52,6 +54,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,superadm
     Route::get('/task',      [\App\Http\Controllers\Admin\TaskController::class,          'showTask'])->name('task');
     Route::get('/task/{id}', [\App\Http\Controllers\Admin\TaskController::class,          'show'])->name('task.detail');
     Route::get('/manage-role', [\App\Http\Controllers\Admin\ManageRoleController::class,  'showManageRole'])->name('manageRole');
+    Route::post('/manage-role', [\App\Http\Controllers\Admin\ManageRoleController::class,  'store'])->name('manageRole.store');
+    Route::post('/manage-role/update', [\App\Http\Controllers\Admin\ManageRoleController::class,  'updateAccount'])->name('manageRole.update');
     Route::get('/materials', [\App\Http\Controllers\Admin\MaterialController::class,      'showMaterials'])->name('materials');
 });
 
