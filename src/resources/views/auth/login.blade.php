@@ -9,7 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    
     @vite(['resources/css/app.css', 'resources/js/login.js'])
 </head>
 
@@ -150,7 +151,7 @@
                         Welcome to the Lab
                     </h2>
                     <p class="text-white/80 text-[15px] animate-fade-in-right [animation-delay:0.5s]">
-                        Colab helps your team lorem ipsum
+                        Colab helps your team work together in a safe and secure space.
                     </p>
                 </div>
 
