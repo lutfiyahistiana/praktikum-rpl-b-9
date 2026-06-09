@@ -2,12 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\TaskController;
-
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
-
 
 // Redirect root ke login
 Route::redirect('/', '/login');
@@ -21,6 +15,8 @@ Route::post('/switch-role',[AuthController::class, 'switchRoleWeb'])->name('swit
 // Profil semua role
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [\App\Http\Controllers\ProfilController::class, 'index'])->name('profil');
+    Route::post('/chatbot/send',   [\App\Http\Controllers\ChatbotController::class, 'sendMessage'])->name('chatbot.send');
+    Route::get('/chatbot/history', [\App\Http\Controllers\ChatbotController::class, 'getHistory'])->name('chatbot.history');
 });
 
 // Anggota Tim
@@ -35,6 +31,11 @@ Route::prefix('anggota-tim')->name('anggota_tim.')->middleware(['auth', 'role:an
 Route::prefix('pelatih')->name('pelatih.')->middleware(['auth', 'role:pelatih'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Pelatih\DashboardController::class,   'showDashboard'])->name('dashboard');
     Route::get('/materials', [\App\Http\Controllers\Pelatih\MaterialController::class,    'showMaterials'])->name('materials');
+    Route::get('/add-material', [\App\Http\Controllers\Pelatih\MaterialController::class,  'createMaterial'])->name('materials.create');
+    Route::post('/add-material', [\App\Http\Controllers\Pelatih\MaterialController::class, 'storeMaterial'])->name('materials.store');
+    Route::get('/materials/{id}/edit', [\App\Http\Controllers\Pelatih\MaterialController::class, 'editMaterial'])->name('materials.edit');
+    Route::put('/materials/{id}', [\App\Http\Controllers\Pelatih\MaterialController::class, 'updateMaterial'])->name('materials.update');
+    Route::delete('/materials/{id}', [\App\Http\Controllers\Pelatih\MaterialController::class, 'destroyMaterial'])->name('materials.destroy');
 });
 
 // Ketua Tim

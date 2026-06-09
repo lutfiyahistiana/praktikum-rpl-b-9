@@ -3,11 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Task extends Model
 {
-    protected $table = 'task';
+    use HasFactory;
 
+    protected $table = 'task';
     protected $primaryKey = 'id_task';
 
     protected $fillable = [
@@ -16,33 +18,16 @@ class Task extends Model
         'assigned_to',
         'assigned_by',
         'deadline',
-        'status'
+        'status',
     ];
 
-    public function assignee()
+    public function assignedTo()
     {
-        return $this->belongsTo(
-            User::class,
-            'assigned_to',
-            'id_user'
-        );
+        return $this->belongsTo(User::class, 'assigned_to', 'id_user');
     }
 
-    public function assigner()
+    public function assignedBy()
     {
-        return $this->belongsTo(
-            User::class,
-            'assigned_by',
-            'id_user'
-        );
-    }
-
-    public function progresses()
-    {
-        return $this->hasMany(
-            TaskProgress::class,
-            'task_id',
-            'id_task'
-        );
+        return $this->belongsTo(User::class, 'assigned_by', 'id_user');
     }
 }

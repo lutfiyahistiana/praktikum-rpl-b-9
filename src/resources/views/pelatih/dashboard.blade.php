@@ -13,13 +13,13 @@
                         {{-- Card: Total BAB Ditambahkan --}}
                         <div class="border border-[#E6E6E6] rounded-lg p-10 text-center">
                             <p class="text-sm text-[#969696] py-2">Total BAB Ditambahkan</p>
-                            <p class="text-3xl font-extrabold text-gray-900">11</p>
+                            <p class="text-3xl font-extrabold text-gray-900">{{ $totalBab }}</p>
                         </div>
 
                         {{-- Card: Total File Ditambahkan --}}
                         <div class="border border-[#E6E6E6] rounded-lg p-10 text-center">
                             <p class="text-sm text-[#969696] py-2">Total File Ditambahkan</p>
-                            <p class="text-3xl font-extrabold text-gray-900">11</p>
+                            <p class="text-3xl font-extrabold text-gray-900">{{ $totalFile }}</p>
                         </div>
                     </div>
                 </div>
