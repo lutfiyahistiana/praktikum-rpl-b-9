@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.tokenizer", "php82Extensions.ctype", "php82Extensions.fileinfo", "php82Extensions.openssl", "php82Extensions.bcmath", "php82Extensions.curl", "composer", "nodejs_20"]
+nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_mysql", "php82Extensions.mbstring", "php82Extensions.xml", "php82Extensions.tokenizer", "php82Extensions.ctype", "php82Extensions.fileinfo", "php82Extensions.openssl", "php82Extensions.bcmath", "php82Extensions.curl", "php82Extensions.gd", "composer", "nodejs_20"]
 
 [phases.install]
 cmds = [
@@ -16,4 +16,4 @@ cmds = [
 ]
 
 [start]
-cmd = "php artisan storage:link && php artisan migrate --seed --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php artisan storage:link --force && php artisan migrate --seed --force && php -S 0.0.0.0:$PORT -t public"
