@@ -292,11 +292,28 @@
 
                 <template x-for="(msg, index) in messages" :key="index">
                     <div :class="msg.role === 'user' ? 'flex justify-end' : 'flex justify-start'">
-                        <div :class="msg.role === 'user'
-                                ? 'bg-colab-blue text-white rounded-2xl rounded-tr-sm px-4 py-2 max-w-[80%] text-sm'
-                                : 'bg-gray-100 text-gray-800 rounded-2xl rounded-tl-sm px-4 py-2 max-w-[80%] text-sm'"
-                            x-text="msg.message">
-                        </div>
+
+                        {{-- Pesan User --}}
+                        <template x-if="msg.role === 'user'">
+                            <div class="bg-colab-blue text-white rounded-2xl rounded-tr-sm px-4 py-2 max-w-[80%] text-sm"
+                                x-text="msg.message">
+                            </div>
+                        </template>
+
+                        {{-- Pesan AI --}}
+                        <template x-if="msg.role !== 'user'">
+                            <div class="bg-gray-100 text-gray-800 rounded-2xl rounded-tl-sm px-4 py-2 max-w-[80%] text-sm space-y-1
+                                        [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:my-1
+                                        [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:my-1
+                                        [&_li]:my-0.5
+                                        [&_p]:my-0.5
+                                        [&_strong]:font-bold
+                                        [&_code]:bg-gray-200 [&_code]:px-1 [&_code]:rounded [&_code]:text-xs
+                                        [&_pre]:bg-gray-800 [&_pre]:text-gray-100 [&_pre]:p-3 [&_pre]:rounded-lg [&_pre]:text-xs [&_pre]:overflow-x-auto [&_pre]:my-1"
+                                x-html="renderMarkdown(msg.message)">
+                            </div>
+                        </template>
+
                     </div>
                 </template>
 
@@ -335,6 +352,11 @@
             inputMessage: '',
             messages:     [],
             sessionId:    null,
+
+            renderMarkdown(text) {
+                if (typeof marked === 'undefined') return text;
+                return marked.parse(text);
+            },
 
             toggleChat() {
                 this.isOpen = !this.isOpen;
@@ -430,5 +452,6 @@
         });
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html>
