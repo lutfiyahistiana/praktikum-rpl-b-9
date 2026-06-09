@@ -71,6 +71,8 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:supe
     Route::get('/task',        [\App\Http\Controllers\Superadmin\TaskController::class,         'showTask'])->name('task');
     Route::get('/task/{id}',   [\App\Http\Controllers\Superadmin\TaskController::class,         'show'])->name('task.detail');
     Route::get('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,   'showManageRole'])->name('manageRole');
+    Route::post('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,  'store'])->name('manageRole.store');
+    Route::post('/manage-role/update', [\App\Http\Controllers\Superadmin\ManageRoleController::class, 'update'])->name('manageRole.update');
     Route::get('/materials',   [\App\Http\Controllers\Superadmin\MaterialController::class,     'showMaterials'])->name('materials');
 });
 
