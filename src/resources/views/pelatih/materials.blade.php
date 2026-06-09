@@ -1,4 +1,4 @@
-@extends('ketuaTim.layouts.app')
+@extends('pelatih.layouts.app')
 
 @section('content')
     {{-- ========================== MAIN CONTENT ========================== --}}
