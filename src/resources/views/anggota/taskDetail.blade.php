@@ -22,7 +22,7 @@
                     {{-- Header --}}
                     <div class="flex items-start justify-between gap-2 mb-1">
                         <h1 class="text-xl sm:text-2xl font-bold text-gray-800">{{ $task->title }}</h1>
-                        @if ($task->status === 'selesai')
+                        @if ($task->status === 'done')
                             <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700 whitespace-nowrap">Selesai</span>
                         @elseif ($task->deadline && \Carbon\Carbon::parse($task->deadline)->isPast())
                             <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-red-100 text-red-600 whitespace-nowrap">Terlambat</span>
@@ -86,7 +86,7 @@
             <div class="w-full md:w-2/5">
                 <div class="bg-white rounded-xl border border-colab-gray p-5 sm:p-6 h-full space-y-4">
 
-                    @if ($task->status !== 'selesai')
+                    @if ($task->status !== 'done' && $task->assigned_to == auth()->user()->id_user)
 
                         {{-- Tombol Lampiran Tautan --}}
                         <button type="button" onclick="toggleLinkInput()"

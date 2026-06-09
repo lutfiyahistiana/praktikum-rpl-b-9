@@ -42,13 +42,10 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $userId = Auth::id();
-
         $task = Task::where('id_task', $id)
-            ->where('assigned_to', $userId)
             ->with([
                 'assigner',
-                'progresses' => fn($q) => $q->where('user_id', $userId)->latest()
+                'progresses' => fn($q) => $q->latest()
             ])
             ->firstOrFail();
 
