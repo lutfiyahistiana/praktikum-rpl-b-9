@@ -2,42 +2,10 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\UserRole;
 use Illuminate\Support\Facades\Hash;
-
-// class UserSeeder extends Seeder
-// {
-//     /**
-//      * Run the database seeds.
-//      */
-//     public function run(): void
-//     {
-//         $user = User::create([
-//             'name' => 'Superadmin 1',
-//             'email' => 'superadmin1@gmail.com',
-//             'password' => Hash::make('12345678'),
-//             'created_by' => null,
-//         ]);
-
-//         UserRole::create([
-//             'id_user' => $user->id_user,
-//             'id_role' => 1, //id superadmin
-//         ]);
-//     }
-// }
-
-// <?php
-
-// namespace Database\Seeders;
-
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-// use Illuminate\Database\Seeder;
-// use App\Models\User;
-// use App\Models\UserRole;
-// use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
@@ -46,11 +14,16 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // A: superadmin1 dapat semua role (superadmin, admin, ketua_tim, pelatih, anggota_tim)
+        // SUPERADMIN
         $superadmin = User::create([
-            'name'       => 'Superadmin 1',
-            'email'      => 'superadmin1@gmail.com',
-            'password'   => Hash::make('12345678'),
+            'name' => 'Superadmin 1',
+            'nim' => 'L0124000',
+            'email' => 'superadmin1@gmail.com',
+            'password' => Hash::make('12345678'),
+            'prodi' => 'Informatika',
+            'fakultas' => 'Fakultas Teknologi Informasi dan Sains Data ',
+            'no_hp' => '088227906220',
+            'username_github' => '-',
             'created_by' => null,
         ]);
 
@@ -61,11 +34,16 @@ class UserSeeder extends Seeder
             ]);
         }
 
-        // B: admin1, role ketua_tim & pelatih
+        // ADMIN
         $admin = User::create([
-            'name'       => 'Admin 1',
-            'email'      => 'admin1@gmail.com',
-            'password'   => Hash::make('admin1234567'),
+            'name' => 'Admin 1',
+            'nim' => 'L0224000',
+            'email' => 'admin1@gmail.com',
+            'password' => Hash::make('admin1234567'),
+            'prodi' => 'Informatika',
+            'fakultas' => 'Fakultas Teknologi Informasi dan Sains Data ',
+            'no_hp' => '088227906220',
+            'username_github' => '-',
             'created_by' => $superadmin->id_user,
         ]);
 
@@ -76,11 +54,16 @@ class UserSeeder extends Seeder
             ]);
         }
 
-        // C: shafa, role anggota_tim & ketua_tim
+        // SHAFA
         $shafa = User::create([
-            'name'       => 'Shafa Rifkika Nur Fauziah',
-            'email'      => 'shafafauziah33@gmail.com',
-            'password'   => Hash::make('shafarifkika123'),
+            'name' => 'Shafa Rifkika Nur Fauziah',
+            'nim' => 'L0124031',
+            'email' => 'shafafauziah33@gmail.com',
+            'password' => Hash::make('shafarifkika123'),
+            'prodi' => 'Informatika',
+            'fakultas' => 'Fakultas Teknologi Informasi dan Sains Data ',
+            'no_hp' => '088227906220',
+            'username_github' => 'shafarifkika',
             'created_by' => $superadmin->id_user,
         ]);
 
@@ -91,30 +74,52 @@ class UserSeeder extends Seeder
             ]);
         }
 
-        // D: anggota1, role anggota_tim
-        $anggota = [
-            ['name' => 'Muhammad Ihza Dzikrullah', 'email' => 'unihza@gmail.com',          'password' => 'muhihza123'],
-            ['name' => 'Rafli Ahmad',              'email' => 'ahmadraplyy@gmail.com',      'password' => 'rafliahmad123'],
-        ];
+        // MUHAMMAD IHZA DZIKRULLAH
+        $ihza = User::create([
+            'name' => 'Muhammad Ihza Dzikrullah',
+            'nim' => 'L0124024',
+            'email' => 'unihza@gmail.com',
+            'password' => Hash::make('muhihza123'),
+            'prodi' => 'Informatika',
+            'fakultas' => 'Fakultas Teknologi Informasi dan Sains Data ',
+            'no_hp' => '081548914418',
+            'username_github' => 'Frenchfrles',
+            'created_by' => $superadmin->id_user,
+        ]);
 
-        foreach ($anggota as $data) {
-            $user = User::create([
-                'name'       => $data['name'],
-                'email'      => $data['email'],
-                'password'   => Hash::make($data['password']),
-                'created_by' => $superadmin->id_user,
-            ]);
+        UserRole::create([
+            'id_user' => $ihza->id_user,
+            'id_role' => 5,
+        ]);
 
-            UserRole::create([
-                'id_user' => $user->id_user,
-                'id_role' => 5, // anggota_tim
-            ]);
-        }
+        // RAFLI
+        $rafli = User::create([
+            'name' => 'Rafli Ahmad',
+            'nim' => 'L0124030',
+            'email' => 'ahmadraplyy@gmail.com',
+            'password' => Hash::make('rafliahmad123'),
+            'prodi' => 'Informatika',
+            'fakultas' => 'Fakultas Teknologi Informasi dan Sains Data ',
+            'no_hp' => '081216210128',
+            'username_github' => 'Rafli-Program',
+            'created_by' => $superadmin->id_user,
+        ]);
 
+        UserRole::create([
+            'id_user' => $rafli->id_user,
+            'id_role' => 5,
+        ]);
+
+        // LUTFIYAH
         $lutfiyah = User::create([
-            'name'       => 'Lutfiyah Istiana',
-            'email'      => 'lutfiyahistiana@gmail.com',
-            'password'   => Hash::make('lutfiyah123'),
+            'name' => 'Lutfiyah Istiana',
+            'nim' => 'L0124022',
+            'email' => 'lutfiyahistiana@gmail.com',
+            'password' => Hash::make('lutfiyah123'),
+            'prodi' => 'Informatika',
+            'fakultas' => 'Fakultas Teknologi Informasi dan Sains Data ',
+            'no_hp' => '081935920710',
+            'username_github' => 'lutfiyahistiana',
             'created_by' => $superadmin->id_user,
         ]);
 

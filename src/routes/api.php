@@ -5,6 +5,11 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskProgressController;
+use App\Http\Controllers\MaterialController;
+
+
 // Public
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -27,7 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{id}/roles', [UserController::class, 'addRole']);
     Route::delete('/users/{id}/roles/{id_role}', [UserController::class, 'removeRole']);
 
-     // Teams
+    // Teams
     Route::get('/teams', [TeamController::class, 'index']);
     Route::post('/teams', [TeamController::class, 'store']);
     Route::get('/teams/{id}', [TeamController::class, 'show']);
@@ -46,4 +51,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/divisions/{id}/members', [DivisionController::class, 'getMembers']);
     Route::post('/divisions/{id}/members', [DivisionController::class, 'addMember']);
     Route::delete('/divisions/{id}/members/{id_user}', [DivisionController::class, 'removeMember']);
+
+    // Tasks 
+    // Tasks 
+    Route::get('/tasks', [TaskController::class, 'index']);
+    Route::post('/tasks', [TaskController::class, 'store']);
+    Route::get('/tasks/{id}', [TaskController::class, 'show']);
+    Route::put('/tasks/{id}', [TaskController::class, 'update']);
+    Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
+
+    // Progress
+Route::get('/progress', [TaskProgressController::class, 'index']);
+Route::get('/progress/{id_user}', [TaskProgressController::class, 'show']);
+
+    // Materials
+    Route::get('/materials', [MaterialController::class, 'index']);
+    Route::post('/materials', [MaterialController::class, 'store']);
+    Route::get('/materials/{id}', [MaterialController::class, 'show']);
+    Route::delete('/materials/{id}', [MaterialController::class, 'destroy']);
 });

@@ -10,8 +10,8 @@ class ManageRoleController extends Controller
     public function showManageRole()
     {
         $data = array(
-            'title'         => 'Manage Role',
-            'menuDashboard' => 'active'
+            'title'         => 'Manage',
+            'menuManage'    => 'active'
         );
         return view('admin.manageRole', $data);
     }
