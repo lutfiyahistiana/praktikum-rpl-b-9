@@ -150,7 +150,7 @@
                         Welcome to the Lab
                     </h2>
                     <p class="text-white/80 text-[15px] animate-fade-in-right [animation-delay:0.5s]">
-                        Colab helps your team lorem ipsum
+                        Colab helps your team work together in a safe and secure space.
                     </p>
                 </div>
 
