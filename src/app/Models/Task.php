@@ -30,4 +30,10 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'assigned_by', 'id_user');
     }
+
+    // Alias untuk assignedTo — dipakai di beberapa controller
+    public function assignee()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'id_user');
+    }
 }
