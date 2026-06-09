@@ -13,8 +13,18 @@ class Material extends Model
     protected $fillable = [
         'title',
         'description',
-        'uploaded_by'
+        'uploaded_by',
+        'division_id'
     ];
+
+    public function division()
+    {
+        return $this->belongsTo(
+            Division::class,
+            'division_id',
+            'id_division'
+        );
+    }
 
     public function uploader()
     {

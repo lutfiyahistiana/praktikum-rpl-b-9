@@ -2,19 +2,6 @@
 
 @section('content')
         {{-- ========================== MAIN CONTENT ========================== --}}
-        @php
-            $unfinishedTasks = [
-                ['title' => 'Nama Tugas', 'receiver' => 'Nama Lengkap Penerima', 'team' => 'Tim A', 'status' => 'Berjalan', 'deadline' => '1 Mei 2026'],
-                ['title' => 'Nama Tugas', 'receiver' => 'Nama Lengkap Penerima', 'team' => 'Tim A', 'status' => 'Berjalan', 'deadline' => '1 Mei 2026'],
-                ['title' => 'Nama Tugas', 'receiver' => 'Nama Lengkap Penerima', 'team' => 'Tim A', 'status' => 'Berjalan', 'deadline' => '1 Mei 2026'],
-            ];
-
-            $finishedTasks = [
-                ['title' => 'Nama Tugas', 'receiver' => 'Nama Lengkap Penerima', 'team' => 'Tim', 'finished_at' => '1 Mei 2026'],
-                ['title' => 'Nama Tugas', 'receiver' => 'Nama Lengkap Penerima', 'team' => 'Tim', 'finished_at' => '1 Mei 2026'],
-                ['title' => 'Nama Tugas', 'receiver' => 'Nama Lengkap Penerima', 'team' => 'Tim', 'finished_at' => '1 Mei 2026'],
-            ];
-        @endphp
 
     <main class="flex-1 px-4 sm:px-6 lg:px-8 pb-6 space-y-6">
 
@@ -43,7 +30,7 @@
 
                     <div class="box-border flex flex-col gap-5">
                         @foreach ($unfinishedTasks as $task)
-                            <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border border-[#E6E6E6] rounded-lg flex flex-col justify-center">
+                            <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border hover:shadow-md transition-shadow duration-200 border-[#E6E6E6] rounded-lg flex flex-col justify-center">
                                 <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black">{{ $task['title'] }}</p>
                                 <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">{{ $task['receiver'] }} &nbsp;|&nbsp; {{ $task['team'] }} &nbsp;|&nbsp; {{ $task['status'] }} &nbsp;|&nbsp; Deadline: {{ $task['deadline'] }}</p>
                             </div>
@@ -58,7 +45,7 @@
 
                     <div class="box-border flex flex-col gap-5">
                         @foreach ($finishedTasks as $task)
-                            <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border border-[#E6E6E6] rounded-lg flex flex-col justify-center">
+                            <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border hover:shadow-md transition-shadow duration-200 border-[#E6E6E6] rounded-lg flex flex-col justify-center">
                                 <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black">{{ $task['title'] }}</p>
                                 <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">{{ $task['receiver'] }} &nbsp;|&nbsp; {{ $task['team'] }} &nbsp;|&nbsp; Tanggal Diselesaikan: {{ $task['finished_at'] }}</p>
                             </div>

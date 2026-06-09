@@ -5,8 +5,29 @@
         <main class="flex-1 px-4 sm:px-6 lg:px-8 pb-6 space-y-6">
 
 
-            <form action="/task/ketua/tambah" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('ketua_tim.task.store') }}" method="POST" id="form-tambah-tugas" enctype="multipart/form-data">
                 @csrf
+
+                @if(session('success'))
+                    <div id="success-alert" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mt-4 mb-2 flex justify-between items-center" role="alert">
+                        <span class="block sm:inline">{{ session('success') }}</span>
+                        <button type="button" onclick="document.getElementById('success-alert').style.display='none'" class="text-green-700 hover:text-green-900 font-bold focus:outline-none">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4 mb-2" role="alert">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 {{-- ========== LAYOUT 2 KOLOM ========== --}}
                 <div class="flex flex-col md:flex-row gap-8 mt-2 items-start">
@@ -32,6 +53,7 @@
                                     placeholder="Johndoe@student.uns.ac.id"
                                 >
                             </div>
+                            <p id="error-judul" class="hidden text-xs text-red-500 mt-1 font-medium">Judul tugas harus diisi.</p>
                         </div>
 
                         {{-- Ditugaskan Kepada --}}
@@ -52,6 +74,7 @@
                                     placeholder="Johndoe@student.uns.ac.id"
                                 >
                             </div>
+                            <p id="error-ditugaskan" class="hidden text-xs text-red-500 mt-1 font-medium">Ditugaskan kepada harus diisi.</p>
                         </div>
 
                         {{-- Deskripsi Tugas --}}
@@ -72,6 +95,7 @@
                                     placeholder="Johndoe@student.uns.ac.id"
                                 ></textarea>
                             </div>
+                            <p id="error-deskripsi" class="hidden text-xs text-red-500 mt-1 font-medium">Deskripsi tugas harus diisi.</p>
                         </div>
 
                         {{-- Tenggat Waktu --}}
@@ -92,6 +116,7 @@
                                     placeholder="Johndoe@student.uns.ac.id"
                                 >
                             </div>
+                            <p id="error-tenggat" class="hidden text-xs text-red-500 mt-1 font-medium">Tenggat waktu harus diisi.</p>
                         </div>
                     </div>
 
@@ -156,7 +181,7 @@
                             <input type="hidden" name="lampiran_link" id="lampiran_link_input" value="">
 
                             {{-- Tugaskan Button --}}
-                            <button type="submit" id="btn-serahkan" class="w-full px-4 py-3 text-white text-sm font-semibold rounded-md text-center active:scale-95 transition-all duration-200 bg-[#2563EB] hover:bg-[#1D4ED8]">
+                            <button type="button" id="btn-serahkan" onclick="validateAndSubmit()" class="w-full px-4 py-3 text-white text-sm font-semibold rounded-md text-center active:scale-95 transition-all duration-200 bg-[#2563EB] hover:bg-[#1D4ED8]">
                                 Tugaskan
                             </button>
 
@@ -171,6 +196,53 @@
     </div>
 
 <script>
+        function validateAndSubmit() {
+            let isValid = true;
+
+            // Reset all errors
+            const errorIds = ['error-judul', 'error-ditugaskan', 'error-deskripsi', 'error-tenggat'];
+            const borderContainers = {
+                'judul_tugas': 'error-judul',
+                'ditugaskan_kepada': 'error-ditugaskan',
+                'deskripsi_tugas': 'error-deskripsi',
+                'tenggat_waktu': 'error-tenggat'
+            };
+
+            errorIds.forEach(id => document.getElementById(id).classList.add('hidden'));
+
+            // Reset border colors
+            Object.keys(borderContainers).forEach(inputId => {
+                const input = document.getElementById(inputId);
+                const wrapper = input.closest('.border');
+                wrapper.classList.remove('border-red-500');
+                wrapper.classList.add('border-[#E6E6E6]');
+            });
+
+            // Validate each required field
+            const fields = [
+                { id: 'judul_tugas', errorId: 'error-judul' },
+                { id: 'ditugaskan_kepada', errorId: 'error-ditugaskan' },
+                { id: 'deskripsi_tugas', errorId: 'error-deskripsi' },
+                { id: 'tenggat_waktu', errorId: 'error-tenggat' },
+            ];
+
+            fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                const value = input.value.trim();
+                if (!value) {
+                    isValid = false;
+                    document.getElementById(field.errorId).classList.remove('hidden');
+                    const wrapper = input.closest('.border');
+                    wrapper.classList.remove('border-[#E6E6E6]');
+                    wrapper.classList.add('border-red-500');
+                }
+            });
+
+            if (isValid) {
+                document.getElementById('form-tambah-tugas').submit();
+            }
+        }
+
         function toggleDropdown() {
             const dropdown = document.getElementById('attachment-dropdown');
             dropdown.classList.toggle('hidden');
