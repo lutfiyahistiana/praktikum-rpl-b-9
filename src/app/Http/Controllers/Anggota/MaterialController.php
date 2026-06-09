@@ -3,16 +3,22 @@
 namespace App\Http\Controllers\Anggota;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Material;
 
 class MaterialController extends Controller
 {
     public function showMaterials()
     {
-        $data = array(
+        $materials = Material::with('files')
+            ->orderBy('created_at')
+            ->get();
+
+        $data = [
             'title'         => 'Materials',
-            'menuMaterials' => 'active'
-        );
+            'menuMaterials' => 'active',
+            'materials'     => $materials,
+        ];
+
         return view('anggota.materials', $data);
     }
 }
