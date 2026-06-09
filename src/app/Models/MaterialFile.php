@@ -3,26 +3,25 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class MaterialFile extends Model
 {
-    protected $table = 'material_files';
+    use HasFactory;
 
+    protected $table = 'material_files';
     protected $primaryKey = 'id_material_file';
+    public $timestamps = false; // Only has created_at, let's just disable default timestamps or handle it
 
     protected $fillable = [
         'material_id',
         'file_type',
         'file_path',
-        'file_name'
+        'file_name',
     ];
 
     public function material()
     {
-        return $this->belongsTo(
-            Material::class,
-            'material_id',
-            'id_material'
-        );
+        return $this->belongsTo(Material::class, 'material_id', 'id_material');
     }
 }

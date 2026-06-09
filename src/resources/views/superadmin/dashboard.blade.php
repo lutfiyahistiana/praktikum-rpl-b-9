@@ -20,7 +20,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-[#969696] font-medium">Total user</p>
-                                <p class="text-2xl font-bold text-gray-900">56</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $totalUsers }}</p>
                             </div>
                         </div>
 
@@ -33,7 +33,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-[#969696] font-medium">Teams</p>
-                                <p class="text-2xl font-bold text-gray-900">4</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $totalTeams }}</p>
                             </div>
                         </div>
 
@@ -46,7 +46,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-[#969696] font-medium">Online</p>
-                                <p class="text-2xl font-bold text-green-500">18</p>
+                                <p class="text-2xl font-bold text-green-500">{{ $onlineUsers }}</p>
                             </div>
                         </div>
 
@@ -59,7 +59,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-[#969696] font-medium">Pending</p>
-                                <p class="text-2xl font-bold text-gray-900">6</p>
+                                <p class="text-2xl font-bold text-gray-900">{{ $pendingUsers }}</p>
                             </div>
                         </div>
 
@@ -83,36 +83,13 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {{-- Row 1: Superadmin --}}
-                                <tr class="border-b border-[#E6E6E6] hover:bg-[#F5F7FA]/50 transition-colors">
-                                    <td class="px-4 py-3 text-sm font-bold text-gray-900">Superadmin</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">5</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">17 November 2024</td>
+                                @foreach($roles as $role)
+                                <tr class="border-b border-[#E6E6E6] hover:bg-[#F5F7FA]/50 transition-colors last:border-0">
+                                    <td class="px-4 py-3 text-sm font-bold text-gray-900">{{ \App\Models\Role::label($role->role_name) }}</td>
+                                    <td class="px-4 py-3 text-sm text-[#969696]">{{ $role->users_count }}</td>
+                                    <td class="px-4 py-3 text-sm text-[#969696]">{{ $role->updated_at ? \Carbon\Carbon::parse($role->updated_at)->format('d F Y') : '-' }}</td>
                                 </tr>
-                                {{-- Row 2: Admin --}}
-                                <tr class="border-b border-[#E6E6E6] hover:bg-[#F5F7FA]/50 transition-colors">
-                                    <td class="px-4 py-3 text-sm font-bold text-gray-900">Admin</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">2</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">2 Agustus 2025</td>
-                                </tr>
-                                {{-- Row 3: Ketua tim --}}
-                                <tr class="border-b border-[#E6E6E6] hover:bg-[#F5F7FA]/50 transition-colors">
-                                    <td class="px-4 py-3 text-sm font-bold text-gray-900">Ketua tim</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">4</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">3 Juni 2025</td>
-                                </tr>
-                                {{-- Row 4: Pelatih --}}
-                                <tr class="border-b border-[#E6E6E6] hover:bg-[#F5F7FA]/50 transition-colors">
-                                    <td class="px-4 py-3 text-sm font-bold text-gray-900">Pelatih</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">3</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">10 April 2024</td>
-                                </tr>
-                                {{-- Row 5: Anggota tim (last row, no border) --}}
-                                <tr class="hover:bg-[#F5F7FA]/50 transition-colors">
-                                    <td class="px-4 py-3 text-sm font-bold text-gray-900">Anggota tim</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">36</td>
-                                    <td class="px-4 py-3 text-sm text-[#969696]">9 April 2025</td>
-                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>

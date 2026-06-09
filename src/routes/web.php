@@ -2,12 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\TaskController;
-
-Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-Route::post('/users', [UserController::class, 'store'])->name('users.store');
-
 
 // Redirect root ke login
 Route::redirect('/', '/login');
@@ -37,15 +31,19 @@ Route::prefix('anggota-tim')->name('anggota_tim.')->middleware(['auth', 'role:an
 Route::prefix('pelatih')->name('pelatih.')->middleware(['auth', 'role:pelatih'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Pelatih\DashboardController::class,   'showDashboard'])->name('dashboard');
     Route::get('/materials', [\App\Http\Controllers\Pelatih\MaterialController::class,    'showMaterials'])->name('materials');
+    Route::get('/add-material', [\App\Http\Controllers\Pelatih\MaterialController::class,  'createMaterial'])->name('materials.create');
+    Route::post('/add-material', [\App\Http\Controllers\Pelatih\MaterialController::class, 'storeMaterial'])->name('materials.store');
+    Route::get('/materials/{id}/edit', [\App\Http\Controllers\Pelatih\MaterialController::class, 'editMaterial'])->name('materials.edit');
+    Route::put('/materials/{id}', [\App\Http\Controllers\Pelatih\MaterialController::class, 'updateMaterial'])->name('materials.update');
+    Route::delete('/materials/{id}', [\App\Http\Controllers\Pelatih\MaterialController::class, 'destroyMaterial'])->name('materials.destroy');
 });
 
 // Ketua Tim
 Route::prefix('ketua-tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_tim'])->group(function () {
-    Route::get('/dashboard',     [\App\Http\Controllers\KetuaTim\DashboardController::class, 'showDashboard'])->name('dashboard');
-    Route::get('/task',          [\App\Http\Controllers\KetuaTim\TaskController::class,       'showTask'])->name('task');
-    Route::get('/task/tambah',   [\App\Http\Controllers\KetuaTim\TaskController::class,       'tambah'])->name('task.tambah');
-    Route::get('/task/{id}',     [\App\Http\Controllers\KetuaTim\TaskController::class,       'show'])->name('task.detail');
-    Route::get('/materials',     [\App\Http\Controllers\KetuaTim\MaterialController::class,   'showMaterials'])->name('materials');
+    Route::get('/dashboard', [\App\Http\Controllers\KetuaTim\DashboardController::class,    'showDashboard'])->name('dashboard');
+    Route::get('/task',      [\App\Http\Controllers\KetuaTim\TaskController::class,          'showTask'])->name('task');
+    Route::get('/task/{id}', [\App\Http\Controllers\KetuaTim\TaskController::class,          'show'])->name('task.detail');
+    Route::get('/materials', [\App\Http\Controllers\KetuaTim\MaterialController::class,      'showMaterials'])->name('materials');
 });
 
 // Admin
