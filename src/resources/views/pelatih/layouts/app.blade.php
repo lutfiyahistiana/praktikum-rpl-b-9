@@ -67,12 +67,12 @@
                 <ul class="space-y-1">
                     {{-- Dashboard --}}
                     <li>
-                        <a href="/dashboard"
+                        <a href="{{ route('pelatih.dashboard') }}"
                             class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
                                 {{ request()->is('dashboard')
                                     ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
                                     : 'text-gray-500 hover:bg-colab-gray-light' }}">
-                            <img src="{{ asset(request()->is('/dashboard') ? 'images/dashboard-active.png' : 'images/dashboard.png') }}"
+                            <img src="{{ asset(request()->is('dashboard') ? 'images/dashboard-active.png' : 'images/dashboard.png') }}"
                                 alt="Dashboard" class="w-14 h-14 object-contain">
                             <span>Dashboard</span>
                         </a>
@@ -80,7 +80,7 @@
 
                     {{-- Materials --}}
                     <li>
-                        <a href="/materials"
+                        <a href="{{ route('pelatih.materials') }}"
                             class="flex items-center gap-3 px-3 rounded-lg text-sm transition-colors
                                 {{ request()->is('materials*')
                                     ? 'font-bold text-colab-blue bg-blue-50 border-l-4 border-colab-blue'
@@ -243,7 +243,24 @@
                 }
             }
         });
+
+        function toggleAccordion(id) {
+            const content = document.getElementById('content-' + id);
+            const chevron = document.getElementById('chevron-' + id);
+            const button = content.previousElementSibling;
+
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
+                button.setAttribute('aria-expanded', 'true');
+            } else {
+                content.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+                button.setAttribute('aria-expanded', 'false');
+            }
+        }
     </script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @yield('scripts')
 </body>
 </html>

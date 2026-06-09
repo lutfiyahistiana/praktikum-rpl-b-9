@@ -29,14 +29,14 @@
                     <h2 class="box-border m-0 mb-6 text-2xl leading-[1.2] font-extrabold text-black">Daftar Tugas Belum Selesai</h2>
 
                     <div class="box-border flex flex-col gap-5">
+                            @forelse($pendingTasks as $task)
                             <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border border-[#E6E6E6] rounded-lg flex flex-col justify-center hover:shadow-md transition-shadow">
-                                <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black">Slicing UI Dashboard</p>
-                                <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">Ihza Dzikrullah | Tim A | Deadline: 1 Mei 2026</p>
+                                <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black">{{ $task->title }}</p>
+                                <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">{{ $task->assignedTo ? $task->assignedTo->name : 'Unassigned' }} | Deadline: {{ $task->deadline ? \Carbon\Carbon::parse($task->deadline)->format('d F Y') : '-' }}</p>
                             </div>
-                            <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border border-[#E6E6E6] rounded-lg flex flex-col justify-center hover:shadow-md transition-shadow">
-                                <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black">Integrasi API Login</p>
-                                <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">Budi Santoso | Tim B | Deadline: 15 Mei 2026</p>
-                            </div>
+                            @empty
+                            <div class="text-gray-500 italic text-sm py-4">Belum ada tugas yang belum selesai.</div>
+                            @endforelse
                     </div>
                 </div>
             </section>
@@ -46,14 +46,14 @@
                     <h2 class="box-border m-0 mb-6 text-2xl leading-[1.2] font-extrabold text-black">Daftar Tugas Selesai</h2>
 
                     <div class="box-border flex flex-col gap-5">
+                            @forelse($doneTasks as $task)
                             <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border border-[#E6E6E6] rounded-lg flex flex-col justify-center hover:shadow-md transition-shadow opacity-60">
-                                <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black line-through">Setup Environment Laravel</p>
-                                <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">Siti Aminah | Tim C | Diselesaikan pada: 10 Maret 2026</p>
+                                <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black line-through">{{ $task->title }}</p>
+                                <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">{{ $task->assignedTo ? $task->assignedTo->name : 'Unassigned' }} | Diselesaikan pada: {{ \Carbon\Carbon::parse($task->updated_at)->format('d F Y') }}</p>
                             </div>
-                            <div class="box-border px-5 py-[18px] min-h-[82px] bg-white border border-[#E6E6E6] rounded-lg flex flex-col justify-center hover:shadow-md transition-shadow opacity-60">
-                                <p class="box-border m-0 mb-3 text-[15px] leading-[1.35] font-extrabold text-black line-through">Wireframe Halaman Login</p>
-                                <p class="box-border m-0 text-[13px] leading-[1.35] font-medium text-[#969696]">Ihza Dzikrullah | Tim A | Diselesaikan pada: 20 Maret 2026</p>
-                            </div>
+                            @empty
+                            <div class="text-gray-500 italic text-sm py-4">Belum ada tugas yang selesai.</div>
+                            @endforelse
                     </div>
                 </div>
             </section>
