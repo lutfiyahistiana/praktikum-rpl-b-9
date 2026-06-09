@@ -12,20 +12,26 @@ Route::post('/login',      [AuthController::class, 'prosesLogin']);
 Route::post('/logout',     [AuthController::class, 'webLogout'])->name('logout')->middleware('auth');
 Route::post('/switch-role',[AuthController::class, 'switchRoleWeb'])->name('switch.role')->middleware('auth');
 
-// Profil semua role
+// Profil
 Route::middleware('auth')->group(function () {
     Route::get('/profil', [\App\Http\Controllers\ProfilController::class, 'index'])->name('profil');
+    Route::put('/profil', [\App\Http\Controllers\ProfilController::class, 'update'])->name('profil.update'); //
     Route::post('/chatbot/send',   [\App\Http\Controllers\ChatbotController::class, 'sendMessage'])->name('chatbot.send');
     Route::get('/chatbot/history', [\App\Http\Controllers\ChatbotController::class, 'getHistory'])->name('chatbot.history');
 });
+
+
+
 
 // Anggota Tim
 Route::prefix('anggota-tim')->name('anggota_tim.')->middleware(['auth', 'role:anggota_tim'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Anggota\DashboardController::class,   'showDashboard'])->name('dashboard');
     Route::get('/task',      [\App\Http\Controllers\Anggota\TaskController::class,        'showTask'])->name('task');
     Route::get('/task/{id}', [\App\Http\Controllers\Anggota\TaskController::class,        'show'])->name('task.detail');
+    Route::post('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'storeProgress'])->name('task.progress.store');
     Route::get('/materials', [\App\Http\Controllers\Anggota\MaterialController::class,    'showMaterials'])->name('materials');
 });
+
 
 // Pelatih
 Route::prefix('pelatih')->name('pelatih.')->middleware(['auth', 'role:pelatih'])->group(function () {
@@ -67,3 +73,9 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:supe
     Route::get('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,   'showManageRole'])->name('manageRole');
     Route::get('/materials',   [\App\Http\Controllers\Superadmin\MaterialController::class,     'showMaterials'])->name('materials');
 });
+
+Route::get('/tasks', [TaskController::class, 'index']);
+Route::post('/tasks', [TaskController::class, 'store']);
+
+
+Route::post('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'storeProgress'])->name('task.progress.store');
