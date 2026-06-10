@@ -17,7 +17,7 @@ class TaskProgressController extends Controller
         $result = $users->map(function ($user) {
             $total    = Task::where('assigned_to', $user->id_user)->count();
             $selesai  = Task::where('assigned_to', $user->id_user)
-                            ->where('status', 'selesai')
+                            ->where('status', 'done')
                             ->count();
             $persentase = $total > 0 ? round(($selesai / $total) * 100, 2) : 0;
 
@@ -43,7 +43,7 @@ class TaskProgressController extends Controller
 
         $total   = Task::where('assigned_to', $id_user)->count();
         $selesai = Task::where('assigned_to', $id_user)
-                       ->where('status', 'selesai')
+                       ->where('status', 'done')
                        ->count();
         $persentase = $total > 0 ? round(($selesai / $total) * 100, 2) : 0;
 

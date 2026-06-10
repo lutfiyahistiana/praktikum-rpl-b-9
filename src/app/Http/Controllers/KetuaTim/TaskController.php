@@ -92,7 +92,7 @@ class TaskController extends Controller
             'title' => $request->judul_tugas,
             'description' => $request->deskripsi_tugas,
             'assigned_to' => $assignee->id_user,
-            'assigned_by' => auth()->id(),
+            'assigned_by' => auth()->user()->id_user,
             'deadline' => $request->tenggat_waktu,
             'status' => 'pending'
         ]);

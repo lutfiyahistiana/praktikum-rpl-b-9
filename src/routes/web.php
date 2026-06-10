@@ -80,3 +80,4 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks',  [\App\Http\Controllers\TaskController::class, 'index']);
     Route::post('/tasks', [\App\Http\Controllers\TaskController::class, 'store']);
 });
+
