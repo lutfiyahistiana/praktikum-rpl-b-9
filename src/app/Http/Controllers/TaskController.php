@@ -13,8 +13,8 @@ class TaskController extends Controller
         $tasks = Task::all();
 
         foreach ($tasks as $task) {
-            if ($task->status === 'belum_dikerjakan' && now()->gt($task->deadline)) {
-                $task->update(['status' => 'terlambat']);
+            if (in_array($task->status, ['pending', 'in_progress']) && now()->gt($task->deadline)) {
+                $task->update(['status' => 'in_progress']);
             }
         }
 
@@ -40,7 +40,7 @@ class TaskController extends Controller
             'assigned_to' => $request->assigned_to,
             'assigned_by' => $request->user()->id_user,
             'deadline'    => $request->deadline,
-            'status'      => 'belum_dikerjakan',
+            'status'      => 'pending',
         ]);
 
         return response()->json([
@@ -56,15 +56,15 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
 
         $request->validate([
-            'status' => 'required|in:belum_dikerjakan,selesai,terlambat',
+            'status' => 'required|in:pending,in_progress,done',
         ]);
 
         // Cek deadline saat mau selesaikan
-        if ($request->status === 'selesai' && now()->gt($task->deadline)) {
-            $task->update(['status' => 'terlambat']);
+        if ($request->status === 'done' && now()->gt($task->deadline)) {
+            $task->update(['status' => 'done']);
             return response()->json([
-                'success' => false,
-                'message' => 'Deadline sudah terlewat, status otomatis menjadi terlambat',
+                'success' => true,
+                'message' => 'Task selesai meski deadline terlewat',
                 'data'    => $task,
             ]);
         }
@@ -84,8 +84,8 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
 
         // Cek otomatis terlambat
-        if ($task->status === 'belum_dikerjakan' && now()->gt($task->deadline)) {
-            $task->update(['status' => 'terlambat']);
+        if (in_array($task->status, ['pending', 'in_progress']) && now()->gt($task->deadline)) {
+            $task->update(['status' => 'in_progress']);
         }
 
         return response()->json([

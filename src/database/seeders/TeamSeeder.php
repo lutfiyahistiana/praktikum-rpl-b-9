@@ -11,37 +11,37 @@ class TeamSeeder extends Seeder
     public function run(): void
     {
         // Sambergeni
-        $sambergeni = Team::create([
-            'team_name' => 'Sambergeni',
-            'ketua_team_id' => 5,
-        ]);
+        $sambergeni = Team::firstOrCreate(
+            ['team_name' => 'Sambergeni'],
+            ['ketua_team_id' => 5]
+        );
 
-        TeamMember::create([
+        TeamMember::firstOrCreate([
             'anggota_id' => 3,
-            'team_id' => $sambergeni->id_team,
+            'team_id'    => $sambergeni->id_team,
         ]);
 
         // Sriwedari
-        $sriwedari = Team::create([
-            'team_name' => 'Sriwedari',
-            'ketua_team_id' => 4,
-        ]);
+        $sriwedari = Team::firstOrCreate(
+            ['team_name' => 'Sriwedari'],
+            ['ketua_team_id' => 4]
+        );
 
-        TeamMember::create([
+        TeamMember::firstOrCreate([
             'anggota_id' => 4,
-            'team_id' => $sriwedari->id_team,
+            'team_id'    => $sriwedari->id_team,
         ]);
 
         // Werkudara
-        $werkudara = Team::create([
-            'team_name' => 'Werkudara',
-            'ketua_team_id' => 3,
-        ]);
+        $werkudara = Team::firstOrCreate(
+            ['team_name' => 'Werkudara'],
+            ['ketua_team_id' => 3]
+        );
 
         foreach ([5, 6] as $userId) {
-            TeamMember::create([
+            TeamMember::firstOrCreate([
                 'anggota_id' => $userId,
-                'team_id' => $werkudara->id_team,
+                'team_id'    => $werkudara->id_team,
             ]);
         }
     }

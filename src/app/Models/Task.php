@@ -30,4 +30,22 @@ class Task extends Model
     {
         return $this->belongsTo(User::class, 'assigned_by', 'id_user');
     }
+
+    // Alias untuk assignedTo — dipakai di beberapa controller
+    public function assignee()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'id_user');
+    }
+
+    // Alias untuk assignedBy — dipakai di view anggota
+    public function assigner()
+    {
+        return $this->belongsTo(User::class, 'assigned_by', 'id_user');
+    }
+
+    // Relasi ke TaskProgress
+    public function progresses()
+    {
+        return $this->hasMany(TaskProgress::class, 'task_id', 'id_task');
+    }
 }
