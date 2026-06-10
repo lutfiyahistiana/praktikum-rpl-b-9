@@ -76,8 +76,7 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:supe
     Route::get('/materials',   [\App\Http\Controllers\Superadmin\MaterialController::class,     'showMaterials'])->name('materials');
 });
 
-Route::get('/tasks', [TaskController::class, 'index']);
-Route::post('/tasks', [TaskController::class, 'store']);
-
-
-Route::post('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'storeProgress'])->name('task.progress.store');
+Route::middleware('auth')->group(function () {
+    Route::get('/tasks',  [\App\Http\Controllers\TaskController::class, 'index']);
+    Route::post('/tasks', [\App\Http\Controllers\TaskController::class, 'store']);
+});
