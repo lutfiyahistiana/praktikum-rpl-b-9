@@ -2,10 +2,9 @@
 
 @section('content')
     {{-- ========================== MAIN CONTENT ========================== --}}
-    <main class="box-border flex-1 w-full p-8 flex flex-col gap-7">
+    <main class="flex-1 px-4 sm:px-6 lg:px-8 pb-6 space-y-6">
 
             <div class="box-border flex flex-col gap-6">
-                <h1 class="box-border m-0 text-2xl leading-[1.2] font-extrabold text-black">Daftar Tugas</h1>
 
                 <div class="box-border relative w-max">
                     <button type="button" onclick="toggleTaskFilter()" class="box-border inline-flex items-center gap-3 p-0 border-0 bg-transparent text-black text-[15px] font-extrabold cursor-pointer">
@@ -59,4 +58,44 @@
             </section>
 
         </main>
+
+<script>
+    function toggleTaskFilter() {
+        const menu = document.getElementById('taskFilterMenu');
+        menu.classList.toggle('hidden');
+    }
+
+    function setTaskFilter(filter) {
+        const pendingSection = document.getElementById('task-pending-section');
+        const doneSection = document.getElementById('task-done-section');
+        const filterLabel = document.getElementById('taskFilterLabel');
+        const menu = document.getElementById('taskFilterMenu');
+
+        if (filter === 'all') {
+            pendingSection.style.display = 'block';
+            doneSection.style.display = 'block';
+            filterLabel.innerText = 'Semua Tugas';
+        } else if (filter === 'unfinished') {
+            pendingSection.style.display = 'block';
+            doneSection.style.display = 'none';
+            filterLabel.innerText = 'Tugas Belum Selesai';
+        } else if (filter === 'finished') {
+            pendingSection.style.display = 'none';
+            doneSection.style.display = 'block';
+            filterLabel.innerText = 'Tugas Selesai';
+        }
+        
+        menu.classList.add('hidden');
+    }
+
+    // Menutup dropdown saat klik di luar menu
+    document.addEventListener('click', function(event) {
+        const filterBtn = document.querySelector('button[onclick="toggleTaskFilter()"]');
+        const menu = document.getElementById('taskFilterMenu');
+        
+        if (!filterBtn.contains(event.target) && !menu.contains(event.target)) {
+            menu.classList.add('hidden');
+        }
+    });
+</script>
 @endsection
