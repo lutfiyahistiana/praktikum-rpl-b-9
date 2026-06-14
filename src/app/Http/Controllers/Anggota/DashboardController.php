@@ -16,18 +16,18 @@ class DashboardController extends Controller
         $allTasks = Task::where('assigned_to', $userId)->get();
 
         $totalTugas     = $allTasks->count();
-        $totalSelesai   = $allTasks->where('status', 'selesai')->count();
-        $totalBerjalan  = $allTasks->where('status', 'belum_dikerjakan')
+        $totalSelesai   = $allTasks->where('status', 'done')->count();
+        $totalBerjalan  = $allTasks->whereIn('status', ['pending', 'in_progress'])
                                    ->filter(fn($t) => !$t->deadline || !Carbon::parse($t->deadline)->isPast())
                                    ->count();
-        $totalTerlambat = $allTasks->where('status', 'belum_dikerjakan')
+        $totalTerlambat = $allTasks->whereIn('status', ['pending', 'in_progress'])
                                    ->filter(fn($t) => $t->deadline && Carbon::parse($t->deadline)->isPast())
                                    ->count();
 
         // Progress = persentase task selesai dari total task
         $avgProgress = $totalTugas > 0 ? round(($totalSelesai / $totalTugas) * 100) : 0;
 
-        $tugasBelumSelesai = $allTasks->where('status', 'belum_dikerjakan')
+        $tugasBelumSelesai = $allTasks->whereIn('status', ['pending', 'in_progress'])
                                       ->sortBy('deadline')
                                       ->values();
 

@@ -18,16 +18,16 @@ class TaskController extends Controller
         $allTasks = Task::where('assigned_to', $userId)->get();
 
         $totalTugas   = $allTasks->count();
-        $totalSelesai = $allTasks->where('status', 'selesai')->count();
+        $totalSelesai = $allTasks->where('status', 'done')->count();
         $avgProgress  = $totalTugas > 0 ? round(($totalSelesai / $totalTugas) * 100) : 0;
 
         $tugasBelumSelesai = Task::where('assigned_to', $userId)
-            ->where('status', 'belum_dikerjakan')
+            ->whereIn('status', ['pending', 'in_progress'])
             ->orderBy('deadline')
             ->get();
 
         $tugasSelesai = Task::where('assigned_to', $userId)
-            ->where('status', 'selesai')
+            ->where('status', 'done')
             ->orderByDesc('updated_at')
             ->get();
 
@@ -42,13 +42,10 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $userId = Auth::id();
-
         $task = Task::where('id_task', $id)
-            ->where('assigned_to', $userId)
             ->with([
                 'assigner',
-                'progresses' => fn($q) => $q->where('user_id', $userId)->latest()
+                'progresses' => fn($q) => $q->latest()
             ])
             ->firstOrFail();
 
@@ -89,7 +86,7 @@ class TaskController extends Controller
         ]);
 
         // Update status task jadi selesai
-        $task->update(['status' => 'selesai']);
+        $task->update(['status' => 'done']);
 
         return redirect()->route('anggota_tim.task.detail', $id)
                          ->with('success', 'Tugas berhasil diselesaikan!');

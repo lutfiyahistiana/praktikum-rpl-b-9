@@ -56,7 +56,7 @@ class MaterialController extends Controller
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
                     'file_type'   => $file->getClientOriginalExtension(),
-                    'file_path'   => '/storage/' . $filePath,
+                    'file_path'   => $filePath,
                     'file_name'   => $file->getClientOriginalName(),
                 ]);
             }
@@ -117,7 +117,7 @@ class MaterialController extends Controller
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
                     'file_type'   => $file->getClientOriginalExtension(),
-                    'file_path'   => '/storage/' . $filePath,
+                    'file_path'   => $filePath,
                     'file_name'   => $file->getClientOriginalName(),
                 ]);
             }

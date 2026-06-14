@@ -31,8 +31,8 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            $user        = User::with('roles')->find(Auth::id());
-            $activeRole  = session('active_role') ?? $user->roles->first()->role_name ?? null;
+            $user       = User::with('roles')->find(Auth::id());
+            $activeRole = $user->roles->first()->role_name ?? null;
 
             // Simpan role aktif ke session
             session(['active_role' => $activeRole]);

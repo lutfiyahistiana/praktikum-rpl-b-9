@@ -15,7 +15,7 @@ class ChatbotController extends Controller
 
     public function __construct()
     {
-        $this->groq = new Groq(env('GROQ_API_KEY'));
+        $this->groq = new Groq(config('groq.api_key'));
     }
 
     public function sendMessage(Request $request)
@@ -59,7 +59,7 @@ class ChatbotController extends Controller
         // Kirim ke Groq
         try {
             $response = $this->groq->chat()->completions()->create([
-                'model'    => env('GROQ_MODEL', 'llama-3.3-70b-versatile'),
+                'model'    => config('groq.model', 'llama-3.3-70b-versatile'),
                 'messages' => array_merge(
                     // System prompt — karakter chatbot
                     [[
