@@ -80,4 +80,21 @@ class MaterialController extends Controller
             'message' => 'Materi berhasil dihapus',
         ]);
     }
+
+    // GET /materials/download/{id} — force download file materi
+    public function download($id)
+    {
+        $file = MaterialFile::findOrFail($id);
+
+        // file_path disimpan sebagai '/storage/materials/filename.ext'
+        // File fisik ada di storage/app/public/materials/filename.ext
+        $relativePath = str_replace('/storage/', '', $file->file_path);
+        $fullPath = storage_path('app/public/' . $relativePath);
+
+        if (!file_exists($fullPath)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        return response()->download($fullPath, $file->file_name);
+    }
 }

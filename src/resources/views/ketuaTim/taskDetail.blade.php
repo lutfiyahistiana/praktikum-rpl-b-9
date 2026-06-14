@@ -50,7 +50,7 @@
                                     id="judul_tugas"
                                     name="judul_tugas"
                                     class="flex-1 text-sm bg-transparent outline-none text-[#333] placeholder-[#9CA3AF]"
-                                    placeholder="Johndoe@student.uns.ac.id"
+
                                 >
                             </div>
                             <p id="error-judul" class="hidden text-xs text-red-500 mt-1 font-medium">Judul tugas harus diisi.</p>
@@ -92,7 +92,6 @@
                                     name="deskripsi_tugas"
                                     class="flex-1 text-sm bg-transparent outline-none resize-y min-h-[100px] text-[#333] placeholder-[#9CA3AF]"
                                     rows="4"
-                                    placeholder="Johndoe@student.uns.ac.id"
                                 ></textarea>
                             </div>
                             <p id="error-deskripsi" class="hidden text-xs text-red-500 mt-1 font-medium">Deskripsi tugas harus diisi.</p>

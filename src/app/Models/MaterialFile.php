@@ -11,7 +11,6 @@ class MaterialFile extends Model
 
     protected $table = 'material_files';
     protected $primaryKey = 'id_material_file';
-    public $timestamps = false; // Only has created_at, let's just disable default timestamps or handle it
 
     protected $fillable = [
         'material_id',

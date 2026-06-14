@@ -23,9 +23,11 @@ class MaterialController extends Controller
 
     public function createMaterial()
     {
+        $divisions = \App\Models\Division::all();
         $data = array(
             'title'         => 'Tambah Materi',
             'menuMaterials' => 'active',
+            'divisions'     => $divisions,
         );
         return view('pelatih.add-materials', $data);
     }
@@ -35,20 +37,22 @@ class MaterialController extends Controller
         $request->validate([
             'judul_bab'     => 'required|string|max:255',
             'deskripsi_bab' => 'nullable|string',
-            'file_materi.*' => 'nullable|file|max:51200', 
+            'division_id'   => 'required|exists:divisions,id_division',
+            'file_materi.*' => 'nullable|file|max:51200',
         ]);
 
         $material = Material::create([
             'title'       => $request->judul_bab,
             'description' => $request->deskripsi_bab,
             'uploaded_by' => auth()->user()->id_user,
+            'division_id' => $request->division_id,
         ]);
 
         if ($request->hasFile('file_materi')) {
             foreach ($request->file('file_materi') as $file) {
                 $fileName = time() . '_' . $file->getClientOriginalName();
                 $filePath = $file->storeAs('materials', $fileName, 'public');
-                
+
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
                     'file_type'   => $file->getClientOriginalExtension(),
@@ -64,11 +68,13 @@ class MaterialController extends Controller
     public function editMaterial($id)
     {
         $material = Material::with('files')->findOrFail($id);
+        $divisions = \App\Models\Division::all();
 
         $data = array(
             'title'         => 'Edit Materi',
             'menuMaterials' => 'active',
             'material'      => $material,
+            'divisions'     => $divisions,
         );
         return view('pelatih.edit-materials', $data);
     }
@@ -83,9 +89,14 @@ class MaterialController extends Controller
             'file_materi.*' => 'nullable|file|max:51200',
         ]);
 
+        $request->validate([
+            'division_id' => 'required|exists:divisions,id_division',
+        ]);
+
         $material->update([
             'title'       => $request->judul_bab,
             'description' => $request->deskripsi_bab,
+            'division_id' => $request->division_id,
         ]);
 
         // Hapus file yang dicentang

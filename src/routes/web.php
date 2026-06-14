@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil', [\App\Http\Controllers\ProfilController::class, 'update'])->name('profil.update'); //
     Route::post('/chatbot/send',   [\App\Http\Controllers\ChatbotController::class, 'sendMessage'])->name('chatbot.send');
     Route::get('/chatbot/history', [\App\Http\Controllers\ChatbotController::class, 'getHistory'])->name('chatbot.history');
+    Route::get('/materials/download/{id}', [\App\Http\Controllers\MaterialController::class, 'download'])->name('materials.download');
 });
 
 
@@ -62,6 +63,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,superadm
     Route::get('/manage-role', [\App\Http\Controllers\Admin\ManageRoleController::class,  'showManageRole'])->name('manageRole');
     Route::post('/manage-role', [\App\Http\Controllers\Admin\ManageRoleController::class,  'store'])->name('manageRole.store');
     Route::post('/manage-role/update', [\App\Http\Controllers\Admin\ManageRoleController::class,  'updateAccount'])->name('manageRole.update');
+    Route::post('/manage-role/delete', [\App\Http\Controllers\Admin\ManageRoleController::class,  'destroy'])->name('manageRole.destroy');
     Route::get('/materials', [\App\Http\Controllers\Admin\MaterialController::class,      'showMaterials'])->name('materials');
 });
 
@@ -73,11 +75,6 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:supe
     Route::get('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,   'showManageRole'])->name('manageRole');
     Route::post('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,  'store'])->name('manageRole.store');
     Route::post('/manage-role/update', [\App\Http\Controllers\Superadmin\ManageRoleController::class, 'update'])->name('manageRole.update');
+    Route::post('/manage-role/delete', [\App\Http\Controllers\Superadmin\ManageRoleController::class, 'destroy'])->name('manageRole.destroy');
     Route::get('/materials',   [\App\Http\Controllers\Superadmin\MaterialController::class,     'showMaterials'])->name('materials');
 });
-
-Route::middleware('auth')->group(function () {
-    Route::get('/tasks',  [\App\Http\Controllers\TaskController::class, 'index']);
-    Route::post('/tasks', [\App\Http\Controllers\TaskController::class, 'store']);
-});
-
