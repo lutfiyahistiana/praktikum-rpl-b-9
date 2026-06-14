@@ -50,6 +50,8 @@ Route::prefix('ketua-tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_
     Route::get('/task',          [\App\Http\Controllers\KetuaTim\TaskController::class,       'showTask'])->name('task');
     Route::get('/task/tambah',   [\App\Http\Controllers\KetuaTim\TaskController::class,       'tambah'])->name('task.tambah');
     Route::post('/task/tambah',  [\App\Http\Controllers\KetuaTim\TaskController::class,       'store'])->name('task.store');
+    Route::delete('/task/{id}',  [\App\Http\Controllers\KetuaTim\TaskController::class,       'destroy'])->name('task.destroy');
+    Route::patch('/task/{id}/revert', [\App\Http\Controllers\KetuaTim\TaskController::class,  'revertStatus'])->name('task.revert');
     Route::get('/task/{id}',     [\App\Http\Controllers\KetuaTim\TaskController::class,       'show'])->name('task.detail');
     Route::get('/materials',     [\App\Http\Controllers\KetuaTim\MaterialController::class,   'showMaterials'])->name('materials');
 });

@@ -26,6 +26,7 @@ class TaskController extends Controller
             $statusStr = ($task->deadline && $task->deadline < now()) ? 'Terlambat' : 'Berjalan';
             
             $unfinishedTasks[] = [
+                'id' => $task->id_task,
                 'title' => $task->title,
                 'receiver' => $task->assignee ? $task->assignee->name : 'Tidak ada',
                 'status' => $statusStr,
@@ -39,6 +40,7 @@ class TaskController extends Controller
             $statusStr = ($task->deadline && $task->updated_at && $task->updated_at > $task->deadline) ? 'Selesai (Terlambat)' : 'Selesai';
 
             $finishedTasks[] = [
+                'id' => $task->id_task,
                 'title' => $task->title,
                 'receiver' => $task->assignee ? $task->assignee->name : 'Tidak ada',
                 'status' => $statusStr,
@@ -111,5 +113,34 @@ class TaskController extends Controller
         
         // 4. Redirect kembali dengan pesan sukses
         return redirect()->route('ketua_tim.task.tambah')->with('success', 'Tugas berhasil ditambahkan!');
+    }
+
+    public function destroy($id)
+    {
+        $task = \App\Models\Task::findOrFail($id);
+        
+        // Pastikan hanya pembuat tugas (Ketua Tim) yang bisa menghapus
+        if ($task->assigned_by !== auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk menghapus tugas ini.');
+        }
+
+        $task->delete();
+        return redirect()->route('ketua_tim.task')->with('success', 'Tugas berhasil dihapus.');
+    }
+
+    public function revertStatus($id)
+    {
+        $task = \App\Models\Task::findOrFail($id);
+
+        if ($task->assigned_by !== auth()->id()) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengubah tugas ini.');
+        }
+
+        if ($task->status === 'done') {
+            $task->update(['status' => 'in_progress']);
+            return redirect()->route('ketua_tim.task')->with('success', 'Status tugas berhasil dikembalikan menjadi belum selesai.');
+        }
+
+        return redirect()->back()->with('error', 'Tugas ini belum selesai.');
     }
 }

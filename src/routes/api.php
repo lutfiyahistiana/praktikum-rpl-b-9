@@ -57,11 +57,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/divisions/{id}/members/{id_user}', [DivisionController::class, 'removeMember']);
     });
 
-    // Tasks — Admin/Superadmin/KetuaTim
-    Route::middleware('role:admin,superadmin,ketua_tim')->group(function () {
+    // Tasks — Read for Admin/Superadmin/KetuaTim/AnggotaTim
+    Route::middleware('role:admin,superadmin,ketua_tim,anggota_tim')->group(function () {
         Route::get('/tasks', [TaskController::class, 'index']);
-        Route::post('/tasks', [TaskController::class, 'store']);
         Route::get('/tasks/{id}', [TaskController::class, 'show']);
+    });
+
+    // Tasks Write — Admin/Superadmin/KetuaTim
+    Route::middleware('role:admin,superadmin,ketua_tim')->group(function () {
+        Route::post('/tasks', [TaskController::class, 'store']);
         Route::put('/tasks/{id}', [TaskController::class, 'update']);
         Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
     });

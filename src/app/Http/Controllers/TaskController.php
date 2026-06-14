@@ -8,9 +8,18 @@ use App\Models\Task;
 class TaskController extends Controller
 {
     // GET /tasks 
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::all();
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+
+        // Jika user HANYA memiliki role anggota_tim (atau jika sedang memakai active_role anggota_tim)
+        // Kita limit task yang dikembalikan hanya task miliknya
+        if (in_array('anggota_tim', $userRoles) && !in_array('admin', $userRoles) && !in_array('superadmin', $userRoles) && !in_array('ketua_tim', $userRoles)) {
+            $tasks = Task::where('assigned_to', $user->id_user)->get();
+        } else {
+            $tasks = Task::all();
+        }
 
         foreach ($tasks as $task) {
             $task->is_overdue = in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline);
@@ -77,9 +86,18 @@ class TaskController extends Controller
     }
 
     // GET /tasks/{id} — detail task
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $task = Task::findOrFail($id);
+
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+
+        if (in_array('anggota_tim', $userRoles) && !in_array('admin', $userRoles) && !in_array('superadmin', $userRoles) && !in_array('ketua_tim', $userRoles)) {
+            if ($task->assigned_to !== $user->id_user) {
+                return response()->json(['message' => 'Anda tidak memiliki akses ke tugas ini.'], 403);
+            }
+        }
 
         // Cek otomatis terlambat
         $task->is_overdue = in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline);
