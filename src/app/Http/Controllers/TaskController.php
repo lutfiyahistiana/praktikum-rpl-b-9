@@ -13,14 +13,12 @@ class TaskController extends Controller
         $tasks = Task::all();
 
         foreach ($tasks as $task) {
-            if (in_array($task->status, ['pending', 'in_progress']) && now()->gt($task->deadline)) {
-                $task->update(['status' => 'in_progress']);
-            }
+            $task->is_overdue = in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline);
         }
 
         return response()->json([
             'success' => true,
-            'data'    => $tasks->fresh(),
+            'data'    => $tasks,
         ]);
     }
 
@@ -84,9 +82,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
 
         // Cek otomatis terlambat
-        if (in_array($task->status, ['pending', 'in_progress']) && now()->gt($task->deadline)) {
-            $task->update(['status' => 'in_progress']);
-        }
+        $task->is_overdue = in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline);
 
         return response()->json([
             'success' => true,

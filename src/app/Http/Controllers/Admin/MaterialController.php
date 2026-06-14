@@ -43,8 +43,8 @@ class MaterialController extends Controller
                         }
 
                         $size = 'Tidak diketahui';
-                        if ($file->file_path && file_exists(public_path($file->file_path))) {
-                            $bytes = filesize(public_path($file->file_path));
+                        if ($file->file_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($file->file_path)) {
+                            $bytes = \Illuminate\Support\Facades\Storage::disk('public')->size($file->file_path);
                             $size = number_format($bytes / 1048576, 2) . ' MB';
                         }
 

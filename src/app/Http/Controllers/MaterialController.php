@@ -72,8 +72,14 @@ class MaterialController extends Controller
     // DELETE /materials/{id} — hapus materi
     public function destroy($id)
     {
-        $material = Material::findOrFail($id);
-        $material->delete(); // files terhapus otomatis karena onDelete cascade
+        $material = Material::with('files')->findOrFail($id);
+
+        // Hapus file fisik dari storage sebelum hapus record
+        foreach ($material->files as $file) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($file->file_path);
+        }
+
+        $material->delete(); // DB records terhapus otomatis karena onDelete cascade
 
         return response()->json([
             'success' => true,

@@ -47,14 +47,17 @@ class ChatbotController extends Controller
             'message'    => $request->message,
         ]);
 
-        // Ambil semua riwayat chat untuk konteks
+        // Ambil riwayat chat terbaru untuk konteks (maks 50 pesan terakhir)
         $history = ChatbotMessage::where('session_id', $session->id_chatbot_session)
             ->orderBy('id_chatbot_message')
             ->get()
             ->map(fn($m) => [
                 'role'    => $m->role,
                 'content' => $m->message,
-            ])->toArray();
+            ])
+            ->slice(-50)
+            ->values()
+            ->toArray();
 
         // Kirim ke Groq
         try {

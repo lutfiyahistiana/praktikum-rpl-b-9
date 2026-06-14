@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChatbotSession extends Model
 {
+    protected $table = 'chatbot_sessions';
     public $timestamps  = false;
     protected $primaryKey = 'id_chatbot_session';
     protected $fillable   = ['user_id'];

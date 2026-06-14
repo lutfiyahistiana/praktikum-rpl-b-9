@@ -22,4 +22,16 @@ class TaskController extends Controller
         );
         return view('superadmin.taskList', $data);
     }
+
+    public function show($id)
+    {
+        $task = Task::with(['assignedTo'])->findOrFail($id);
+
+        $data = [
+            'title'    => 'Detail Tugas',
+            'menuTask' => 'active',
+            'task'     => $task,
+        ];
+        return view('superadmin.taskDetail', $data);
+    }
 }

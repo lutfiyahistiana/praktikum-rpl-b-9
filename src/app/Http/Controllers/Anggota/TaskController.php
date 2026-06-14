@@ -43,6 +43,7 @@ class TaskController extends Controller
     public function show($id)
     {
         $task = Task::where('id_task', $id)
+            ->where('assigned_to', Auth::id())
             ->with([
                 'assigner',
                 'progresses' => fn($q) => $q->latest()

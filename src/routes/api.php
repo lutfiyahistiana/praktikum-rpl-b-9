@@ -20,53 +20,61 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/switch-role', [AuthController::class, 'switchRole']);
 
-    // Users
-    Route::get('/users', [UserController::class, 'index']);
-    Route::post('/users', [UserController::class, 'store']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    // Users & Roles — Admin/Superadmin only
+    Route::middleware('role:admin,superadmin')->group(function () {
+        Route::get('/users', [UserController::class, 'index']);
+        Route::post('/users', [UserController::class, 'store']);
+        Route::get('/users/{id}', [UserController::class, 'show']);
+        Route::put('/users/{id}', [UserController::class, 'update']);
+        Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
-    // Roles
-    Route::get('/roles', [UserController::class, 'getRoles']);
-    Route::post('/users/{id}/roles', [UserController::class, 'addRole']);
-    Route::delete('/users/{id}/roles/{id_role}', [UserController::class, 'removeRole']);
+        Route::get('/roles', [UserController::class, 'getRoles']);
+        Route::post('/users/{id}/roles', [UserController::class, 'addRole']);
+        Route::delete('/users/{id}/roles/{id_role}', [UserController::class, 'removeRole']);
+    });
 
-    // Teams
-    Route::get('/teams', [TeamController::class, 'index']);
-    Route::post('/teams', [TeamController::class, 'store']);
-    Route::get('/teams/{id}', [TeamController::class, 'show']);
-    Route::put('/teams/{id}', [TeamController::class, 'update']);
-    Route::delete('/teams/{id}', [TeamController::class, 'destroy']);
-    Route::get('/teams/{id}/members', [TeamController::class, 'getMembers']);
-    Route::post('/teams/{id}/members', [TeamController::class, 'addMember']);
-    Route::delete('/teams/{id}/members/{id_user}', [TeamController::class, 'removeMember']);
+    // Teams — Admin/Superadmin only
+    Route::middleware('role:admin,superadmin')->group(function () {
+        Route::get('/teams', [TeamController::class, 'index']);
+        Route::post('/teams', [TeamController::class, 'store']);
+        Route::get('/teams/{id}', [TeamController::class, 'show']);
+        Route::put('/teams/{id}', [TeamController::class, 'update']);
+        Route::delete('/teams/{id}', [TeamController::class, 'destroy']);
+        Route::get('/teams/{id}/members', [TeamController::class, 'getMembers']);
+        Route::post('/teams/{id}/members', [TeamController::class, 'addMember']);
+        Route::delete('/teams/{id}/members/{id_user}', [TeamController::class, 'removeMember']);
+    });
 
-    // Divisions
-    Route::get('/divisions', [DivisionController::class, 'index']);
-    Route::post('/divisions', [DivisionController::class, 'store']);
-    Route::get('/divisions/{id}', [DivisionController::class, 'show']);
-    Route::put('/divisions/{id}', [DivisionController::class, 'update']);
-    Route::delete('/divisions/{id}', [DivisionController::class, 'destroy']);
-    Route::get('/divisions/{id}/members', [DivisionController::class, 'getMembers']);
-    Route::post('/divisions/{id}/members', [DivisionController::class, 'addMember']);
-    Route::delete('/divisions/{id}/members/{id_user}', [DivisionController::class, 'removeMember']);
+    // Divisions — Admin/Superadmin only
+    Route::middleware('role:admin,superadmin')->group(function () {
+        Route::get('/divisions', [DivisionController::class, 'index']);
+        Route::post('/divisions', [DivisionController::class, 'store']);
+        Route::get('/divisions/{id}', [DivisionController::class, 'show']);
+        Route::put('/divisions/{id}', [DivisionController::class, 'update']);
+        Route::delete('/divisions/{id}', [DivisionController::class, 'destroy']);
+        Route::get('/divisions/{id}/members', [DivisionController::class, 'getMembers']);
+        Route::post('/divisions/{id}/members', [DivisionController::class, 'addMember']);
+        Route::delete('/divisions/{id}/members/{id_user}', [DivisionController::class, 'removeMember']);
+    });
 
-    // Tasks 
-    // Tasks 
-    Route::get('/tasks', [TaskController::class, 'index']);
-    Route::post('/tasks', [TaskController::class, 'store']);
-    Route::get('/tasks/{id}', [TaskController::class, 'show']);
-    Route::put('/tasks/{id}', [TaskController::class, 'update']);
-    Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
+    // Tasks — Admin/Superadmin/KetuaTim
+    Route::middleware('role:admin,superadmin,ketua_tim')->group(function () {
+        Route::get('/tasks', [TaskController::class, 'index']);
+        Route::post('/tasks', [TaskController::class, 'store']);
+        Route::get('/tasks/{id}', [TaskController::class, 'show']);
+        Route::put('/tasks/{id}', [TaskController::class, 'update']);
+        Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
+    });
 
-    // Progress
-Route::get('/progress', [TaskProgressController::class, 'index']);
-Route::get('/progress/{id_user}', [TaskProgressController::class, 'show']);
+    // Progress — All authenticated users
+    Route::get('/progress', [TaskProgressController::class, 'index']);
+    Route::get('/progress/{id_user}', [TaskProgressController::class, 'show']);
 
-    // Materials
+    // Materials — Read for all, write for admin/superadmin/pelatih
     Route::get('/materials', [MaterialController::class, 'index']);
-    Route::post('/materials', [MaterialController::class, 'store']);
     Route::get('/materials/{id}', [MaterialController::class, 'show']);
-    Route::delete('/materials/{id}', [MaterialController::class, 'destroy']);
+    Route::middleware('role:admin,superadmin,pelatih')->group(function () {
+        Route::post('/materials', [MaterialController::class, 'store']);
+        Route::delete('/materials/{id}', [MaterialController::class, 'destroy']);
+    });
 });

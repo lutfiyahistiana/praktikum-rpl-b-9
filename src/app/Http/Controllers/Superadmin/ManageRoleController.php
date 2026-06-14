@@ -58,12 +58,17 @@ class ManageRoleController extends Controller
             'role'     => 'required|exists:roles,id_role',
         ]);
 
+        // Prevent assigning Superadmin role (id_role = 1)
+        if ($request->role == 1) {
+            return redirect()->back()->withErrors(['role' => 'Tidak bisa menambahkan hak akses Superadmin melalui form ini.'])->withInput();
+        }
+
         // Check if user already exists
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             $request->validate([
-                'password' => 'required|string|min:6',
+                'password' => 'required|string|min:8',
             ]);
 
             $user = User::create([
@@ -97,6 +102,12 @@ class ManageRoleController extends Controller
         ]);
 
         $user = User::findOrFail($request->id_user);
+
+        // Prevent editing superadmin account
+        $isSuperadmin = UserRole::where('id_user', $user->id_user)->where('id_role', 1)->exists();
+        if ($isSuperadmin && auth()->id() !== $user->id_user) {
+            return redirect()->back()->withErrors(['error' => 'Anda tidak diizinkan mengubah data akun Superadmin lain.']);
+        }
 
         $updateData = [
             'name'            => $request->name,

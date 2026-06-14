@@ -89,7 +89,7 @@ class ManageRoleController extends Controller
             // User doesn't exist, create it
             $request->validate([
                 'name' => 'required|string|max:100',
-                'password' => 'required|min:6',
+                'password' => 'required|min:8',
             ]);
 
             $user = \App\Models\User::create([

@@ -26,7 +26,7 @@ class TaskProgressController extends Controller
                 'name'        => $user->name,
                 'total_tugas' => $total,
                 'selesai'     => $selesai,
-                'persentase'  => $persentase . '%',
+                'persentase'  => $persentase,
             ];
         });
 
@@ -58,7 +58,7 @@ class TaskProgressController extends Controller
                 'name'        => $user->name,
                 'total_tugas' => $total,
                 'selesai'     => $selesai,
-                'persentase'  => $persentase . '%',
+                'persentase'  => $persentase,
                 'tasks'       => $tasks,
             ],
         ]);

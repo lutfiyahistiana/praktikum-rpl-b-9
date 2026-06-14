@@ -72,10 +72,10 @@ class ProfilController extends Controller
             $user->photo = $path;
         }
 
-        $user->prodi = $request->prodi;
-        $user->fakultas = $request->fakultas;
-        $user->no_hp = $request->no_hp;
-        $user->username_github = $request->username_github;
+        if ($request->has('prodi'))           $user->prodi = $request->prodi;
+        if ($request->has('fakultas'))        $user->fakultas = $request->fakultas;
+        if ($request->has('no_hp'))           $user->no_hp = $request->no_hp;
+        if ($request->has('username_github')) $user->username_github = $request->username_github;
 
         $user->save();
 

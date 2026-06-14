@@ -14,7 +14,9 @@ class TaskController extends Controller
         $memberIds = $team ? $team->members()->pluck('anggota_id')->toArray() : [];
         $relevantUserIds = array_unique(array_merge([$user_id], $memberIds));
 
-        $tasksQuery = \App\Models\Task::with(['assignee'])->whereIn('assigned_to', $relevantUserIds)->orWhere('assigned_by', $user_id);
+        $tasksQuery = \App\Models\Task::with(['assignee'])->where(function($q) use ($relevantUserIds, $user_id) {
+            $q->whereIn('assigned_to', $relevantUserIds)->orWhere('assigned_by', $user_id);
+        });
         
         $unfinishedTasksData = (clone $tasksQuery)->whereIn('status', ['pending', 'in_progress'])->get();
         $finishedTasksData = (clone $tasksQuery)->where('status', 'done')->get();
@@ -33,7 +35,8 @@ class TaskController extends Controller
 
         $finishedTasks = [];
         foreach ($finishedTasksData as $task) {
-            $statusStr = ($task->deadline && $task->deadline < now()) ? 'Terlambat' : 'Berjalan'; // Though it's finished, maybe it was late? The view says 'Terlambat' or 'Berjalan' even for finished tasks? Wait, let's just keep it like unfinished for the view variables.
+            // Task selesai: tandai apakah selesai tepat waktu atau terlambat
+            $statusStr = ($task->deadline && $task->updated_at && $task->updated_at > $task->deadline) ? 'Selesai (Terlambat)' : 'Selesai';
 
             $finishedTasks[] = [
                 'title' => $task->title,
@@ -85,6 +88,15 @@ class TaskController extends Controller
         $assignee = \App\Models\User::where('email', $request->ditugaskan_kepada)->first();
         if (!$assignee) {
             return redirect()->back()->withErrors(['ditugaskan_kepada' => 'Email pengguna tidak ditemukan di sistem.'])->withInput();
+        }
+
+        // Validasi: pastikan assignee adalah anggota tim ketua
+        $team = \App\Models\Team::where('ketua_team_id', auth()->id())->first();
+        if ($team) {
+            $isMember = $team->members()->where('anggota_id', $assignee->id_user)->exists();
+            if (!$isMember && $assignee->id_user !== auth()->id()) {
+                return redirect()->back()->withErrors(['ditugaskan_kepada' => 'Pengguna tersebut bukan anggota tim Anda.'])->withInput();
+            }
         }
 
         // 3. Simpan ke database

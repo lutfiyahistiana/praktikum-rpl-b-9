@@ -102,7 +102,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $activeRole = $user->roles->first()->role_name ?? 'auth_token';
+        $token = $user->createToken($activeRole)->plainTextToken;
 
         return response()->json([
             'success' => true,

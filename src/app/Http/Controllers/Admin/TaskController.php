@@ -56,4 +56,23 @@ class TaskController extends Controller
         );
         return view('admin.taskList', $data);
     }
+
+    public function show($id)
+    {
+        $task = \App\Models\Task::with(['assignee', 'assigner'])->findOrFail($id);
+
+        $teamName = 'Tidak ada Tim';
+        $teamMember = \App\Models\TeamMember::with('team')->where('anggota_id', $task->assigned_to)->first();
+        if ($teamMember && $teamMember->team) {
+            $teamName = $teamMember->team->team_name;
+        }
+
+        $data = [
+            'title'    => 'Detail Tugas',
+            'menuTask' => 'active',
+            'task'     => $task,
+            'teamName' => $teamName,
+        ];
+        return view('admin.taskDetail', $data);
+    }
 }
