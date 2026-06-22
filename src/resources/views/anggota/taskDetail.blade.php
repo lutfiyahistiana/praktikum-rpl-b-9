@@ -49,6 +49,25 @@
                         Deadline: {{ $task->deadline ? \Carbon\Carbon::parse($task->deadline)->translatedFormat('d F Y') : '-' }}
                     </p>
 
+                    {{-- Attachment dari ketua tim --}}
+                    @if($task->attachment_link || $task->attachment_file)
+                        <div class="mt-4 space-y-2">
+                            <p class="text-sm font-semibold text-gray-700">Lampiran:</p>
+                            @if($task->attachment_link)
+                                <a href="{{ $task->attachment_link }}" target="_blank"
+                                   class="flex items-center gap-2 text-sm text-colab-blue underline">
+                                    🔗 {{ $task->attachment_link }}
+                                </a>
+                            @endif
+                            @if($task->attachment_file)
+                                <a href="{{ \App\Helpers\StorageHelper::url($task->attachment_file) }}" target="_blank"
+                                   class="flex items-center gap-2 text-sm text-colab-blue underline">
+                                    📎 Lihat File Lampiran
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+
                     {{-- Riwayat pengerjaan --}}
                     @if ($task->progresses->count() > 0)
                         <div class="mt-5">

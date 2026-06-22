@@ -93,13 +93,20 @@ class TaskController extends Controller
         }
 
         // 3. Simpan ke database
+        $attachmentPath = null;
+        if ($request->hasFile('lampiran_file')) {
+            $attachmentPath = \App\Helpers\StorageHelper::store($request->file('lampiran_file'), 'task-attachments');
+        }
+
         \App\Models\Task::create([
-            'title' => $request->judul_tugas,
-            'description' => $request->deskripsi_tugas,
-            'assigned_to' => $assignee->id_user,
-            'assigned_by' => auth()->user()->id_user,
-            'deadline' => $request->tenggat_waktu,
-            'status' => 'pending'
+            'title'           => $request->judul_tugas,
+            'description'     => $request->deskripsi_tugas,
+            'assigned_to'     => $assignee->id_user,
+            'assigned_by'     => auth()->user()->id_user,
+            'deadline'        => $request->tenggat_waktu,
+            'status'          => 'pending',
+            'attachment_file' => $attachmentPath,
+            'attachment_link' => $request->lampiran_link ?: null,
         ]);
         
         // 4. Redirect kembali dengan pesan sukses

@@ -19,6 +19,8 @@ class Task extends Model
         'assigned_by',
         'deadline',
         'status',
+        'attachment_file',
+        'attachment_link',
     ];
 
     public function assignedTo()
