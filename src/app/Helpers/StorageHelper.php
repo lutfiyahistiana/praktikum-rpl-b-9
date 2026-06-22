@@ -7,11 +7,21 @@ use Illuminate\Support\Facades\Storage;
 class StorageHelper
 {
     /**
-     * Determine which disk to use — OSS if configured, otherwise public.
+     * Determine which disk to use — OSS if configured and working, otherwise public.
      */
     public static function disk(): string
     {
-        return env('OSS_ACCESS_KEY_ID') ? 'oss' : 'public';
+        if (!env('OSS_ACCESS_KEY_ID') || !env('OSS_BUCKET')) {
+            return 'public';
+        }
+
+        // Test if OSS disk is actually working
+        try {
+            Storage::disk('oss')->exists('test-connection');
+            return 'oss';
+        } catch (\Throwable $e) {
+            return 'public';
+        }
     }
 
     /**
@@ -31,14 +41,14 @@ class StorageHelper
     }
 
     /**
-     * Delete a file from the appropriate disk.
+     * Delete a file — fail silently if disk not available.
      */
     public static function delete(string $path): void
     {
         try {
             Storage::disk(self::disk())->delete($path);
-        } catch (\Exception $e) {
-            // Fail silently — file deletion should not block the app
+        } catch (\Throwable $e) {
+            // Fail silently
         }
     }
 
