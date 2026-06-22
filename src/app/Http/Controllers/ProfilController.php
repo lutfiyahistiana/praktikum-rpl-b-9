@@ -67,7 +67,6 @@ class ProfilController extends Controller
         if ($request->hasFile('photo')) {
             $path = \App\Helpers\StorageHelper::store($request->file('photo'), 'profile-photos');
             $user->photo = $path;
-            \Illuminate\Support\Facades\Log::info('Photo uploaded', ['path' => $path, 'url' => \App\Helpers\StorageHelper::url($path)]);
         }
 
         if ($request->has('prodi'))           $user->prodi = $request->prodi;

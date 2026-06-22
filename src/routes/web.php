@@ -6,25 +6,6 @@ use App\Http\Controllers\Auth\AuthController;
 // Redirect root ke login
 Route::redirect('/', '/login');
 
-// Temporary debug route
-Route::get('/debug-upload', function () {
-    $ossKey     = config('filesystems.disks.oss.key');
-    $ossBucket  = config('filesystems.disks.oss.bucket');
-    $ossEndpoint = config('filesystems.disks.oss.endpoint');
-    $ossUrl     = config('filesystems.disks.oss.url');
-    $user       = auth()->user();
-
-    return response()->json([
-        'oss_key_set'      => !empty($ossKey),
-        'oss_bucket'       => $ossBucket,
-        'oss_endpoint'     => $ossEndpoint,
-        'oss_url'          => $ossUrl,
-        'user_photo_db'    => $user?->photo,
-        'photo_url'        => $user?->photo ? \App\Helpers\StorageHelper::url($user->photo) : null,
-        'oss_configured'   => !empty($ossKey) && !empty($ossBucket),
-    ]);
-})->middleware('auth');
-
 // Auth
 Route::get('/login',       [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login',      [AuthController::class, 'prosesLogin']);

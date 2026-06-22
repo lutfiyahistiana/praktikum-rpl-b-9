@@ -90,7 +90,9 @@ class StorageHelper
 
     public static function store(UploadedFile $file, string $directory): string
     {
-        $fileName = uniqid() . '_' . $file->getClientOriginalName();
+        // Sanitize filename — replace spaces with underscores
+        $originalName = str_replace(' ', '_', $file->getClientOriginalName());
+        $fileName = uniqid() . '_' . $originalName;
         return self::storeAs($file, $directory, $fileName);
     }
 
@@ -129,7 +131,9 @@ class StorageHelper
         $ossUrl = env('OSS_URL');
 
         if ($ossUrl && self::ossConfigured()) {
-            return rtrim($ossUrl, '/') . '/' . ltrim($path, '/');
+            // Encode path segments to handle spaces and special chars
+            $encodedPath = implode('/', array_map('rawurlencode', explode('/', ltrim($path, '/'))));
+            return rtrim($ossUrl, '/') . '/' . $encodedPath;
         }
 
         return Storage::disk('public')->url($path);
