@@ -86,14 +86,13 @@ class MaterialController extends Controller
     {
         $file = MaterialFile::findOrFail($id);
 
-        // file_path disimpan sebagai '/storage/materials/filename.ext'
-        // File fisik ada di storage/app/public/materials/filename.ext
-        $relativePath = str_replace('/storage/', '', $file->file_path);
-        $fullPath = storage_path('app/public/' . $relativePath);
+        $disk = \Illuminate\Support\Facades\Storage::disk('public');
 
-        if (!file_exists($fullPath)) {
+        if (!$disk->exists($file->file_path)) {
             abort(404, 'File tidak ditemukan.');
         }
+
+        $fullPath = $disk->path($file->file_path);
 
         return response()->download($fullPath, $file->file_name);
     }
