@@ -19,29 +19,30 @@ class StorageHelper
      */
     private static function uploadToOss(UploadedFile $file, string $directory, string $fileName): string
     {
-        $key        = trim($directory, '/') . '/' . $fileName;
-        $bucket     = env('OSS_BUCKET');
-        $endpoint   = env('OSS_ENDPOINT');
-        $accessId   = env('OSS_ACCESS_KEY_ID');
-        $accessKey  = env('OSS_ACCESS_KEY_SECRET');
-        $date       = gmdate('D, d M Y H:i:s \G\M\T');
-        $contentType = $file->getMimeType();
-        $content    = file_get_contents($file->getRealPath());
-        $md5        = base64_encode(md5($content, true));
+        $key         = trim($directory, '/') . '/' . $fileName;
+        $bucket      = env('OSS_BUCKET');
+        $endpoint    = env('OSS_ENDPOINT');
+        $accessId    = env('OSS_ACCESS_KEY_ID');
+        $accessKey   = env('OSS_ACCESS_KEY_SECRET');
+        $date        = gmdate('D, d M Y H:i:s \G\M\T');
+        $contentType = $file->getMimeType() ?: 'application/octet-stream';
+        $filePath    = $file->getRealPath();
+        $fileSize    = $file->getSize();
 
-        $stringToSign = "PUT\n{$md5}\n{$contentType}\n{$date}\n/{$bucket}/{$key}";
+        $stringToSign = "PUT\n\n{$contentType}\n{$date}\n/{$bucket}/{$key}";
         $signature    = base64_encode(hash_hmac('sha1', $stringToSign, $accessKey, true));
 
         $url = "https://{$bucket}.{$endpoint}/{$key}";
 
+        $fh = fopen($filePath, 'r');
         $ch = curl_init($url);
         curl_setopt_array($ch, [
-            CURLOPT_CUSTOMREQUEST  => 'PUT',
-            CURLOPT_POSTFIELDS     => $content,
+            CURLOPT_PUT            => true,
+            CURLOPT_INFILE         => $fh,
+            CURLOPT_INFILESIZE     => $fileSize,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPHEADER     => [
                 "Content-Type: {$contentType}",
-                "Content-MD5: {$md5}",
                 "Date: {$date}",
                 "Authorization: OSS {$accessId}:{$signature}",
             ],
@@ -50,6 +51,7 @@ class StorageHelper
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
+        fclose($fh);
 
         if ($httpCode !== 200) {
             throw new \Exception("OSS upload failed with HTTP {$httpCode}: {$response}");
