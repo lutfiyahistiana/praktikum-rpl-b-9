@@ -9,10 +9,8 @@ class StorageHelper
 {
     private static function ossConfigured(): bool
     {
-        return env('OSS_ACCESS_KEY_ID')
-            && env('OSS_ACCESS_KEY_SECRET')
-            && env('OSS_BUCKET')
-            && env('OSS_ENDPOINT');
+        return config('filesystems.disks.oss.key')
+            && config('filesystems.disks.oss.bucket');
     }
 
     /**
