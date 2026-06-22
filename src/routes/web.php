@@ -3,6 +3,19 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 
+// Temporary OSS debug route - remove after testing
+Route::get('/debug-oss', function () {
+    try {
+        $disk = \Illuminate\Support\Facades\Storage::disk('oss');
+        $disk->put('test.txt', 'hello');
+        $url = $disk->url('test.txt');
+        $disk->delete('test.txt');
+        return response()->json(['status' => 'OK', 'url' => $url]);
+    } catch (\Throwable $e) {
+        return response()->json(['status' => 'ERROR', 'message' => $e->getMessage()]);
+    }
+})->middleware('auth');
+
 // Redirect root ke login
 Route::redirect('/', '/login');
 
