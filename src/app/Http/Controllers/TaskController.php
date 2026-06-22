@@ -74,19 +74,21 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+        $isAnggota = in_array('anggota_tim', $userRoles)
+            && !in_array('admin', $userRoles)
+            && !in_array('superadmin', $userRoles)
+            && !in_array('ketua_tim', $userRoles);
 
-        $request->validate([
-            'status' => 'required|in:pending,in_progress,done',
-        ]);
-
-        // Cek deadline saat mau selesaikan
-        if ($request->status === 'done' && now()->gt($task->deadline)) {
-            $task->update(['status' => 'done']);
-            return response()->json([
-                'success' => true,
-                'message' => 'Task selesai meski deadline terlewat',
-                'data'    => $task,
-            ]);
+        // Anggota hanya bisa update task miliknya ke status done
+        if ($isAnggota) {
+            if ($task->assigned_to !== $user->id_user) {
+                return response()->json(['success' => false, 'message' => 'Anda tidak memiliki akses ke tugas ini.'], 403);
+            }
+            $request->validate(['status' => 'required|in:done']);
+        } else {
+            $request->validate(['status' => 'required|in:pending,in_progress,done']);
         }
 
         $task->update(['status' => $request->status]);
@@ -94,7 +96,7 @@ class TaskController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Status task berhasil diupdate',
-            'data'    => $task,
+            'data'    => $this->addStatusLabel($task),
         ]);
     }
 

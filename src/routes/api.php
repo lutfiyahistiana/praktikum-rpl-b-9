@@ -61,12 +61,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:admin,superadmin,ketua_tim,anggota_tim')->group(function () {
         Route::get('/tasks', [TaskController::class, 'index']);
         Route::get('/tasks/{id}', [TaskController::class, 'show']);
+        Route::put('/tasks/{id}', [TaskController::class, 'update']); // anggota hanya bisa update task miliknya
     });
 
-    // Tasks Write — Admin/Superadmin/KetuaTim
+    // Tasks Write — Admin/Superadmin/KetuaTim only
     Route::middleware('role:admin,superadmin,ketua_tim')->group(function () {
         Route::post('/tasks', [TaskController::class, 'store']);
-        Route::put('/tasks/{id}', [TaskController::class, 'update']);
         Route::delete('/tasks/{id}', [TaskController::class, 'destroy']);
     });
 
