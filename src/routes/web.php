@@ -81,7 +81,7 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:supe
     Route::get('/materials',   [\App\Http\Controllers\Superadmin\MaterialController::class,     'showMaterials'])->name('materials');
 });
 
-Route::middleware(['auth', 'role:admin,superadmin,ketua_tim'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/tasks',  [\App\Http\Controllers\TaskController::class, 'index']);
     Route::post('/tasks', [\App\Http\Controllers\TaskController::class, 'store']);
 });
