@@ -42,11 +42,7 @@
                                             $icon = 'file'; $color = '#EF4444'; $background = '#FEE2E2';
                                         }
 
-                                        $size = 'Tidak diketahui';
-                                        if ($file->file_path && file_exists(public_path($file->file_path))) {
-                                            $bytes = filesize(public_path($file->file_path));
-                                            $size = number_format($bytes / 1048576, 2) . ' MB';
-                                        }
+                                        $size = strtoupper($file->file_type) ?: 'File';
                                     @endphp
                                     <div class="box-border p-3 rounded-lg flex items-center gap-3 hover:bg-[#F5F7FA] transition-colors">
                                         <a href="{{ \App\Helpers\StorageHelper::url($file->file_path) }}" target="_blank" class="box-border flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
