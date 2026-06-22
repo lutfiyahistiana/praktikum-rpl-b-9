@@ -2,10 +2,13 @@
 
 namespace App\Helpers;
 
+use Illuminate\Support\Facades\Storage;
+
 class StorageHelper
 {
     /**
-     * Generate public URL for a file stored in OSS or fallback to local storage.
+     * Generate public URL for a file.
+     * Uses OSS URL if configured, otherwise falls back to local public storage.
      */
     public static function url(?string $path): string
     {
@@ -13,13 +16,12 @@ class StorageHelper
             return '';
         }
 
-        $ossUrl = config('filesystems.disks.oss.url');
+        $ossUrl = env('OSS_URL');
 
         if ($ossUrl) {
             return rtrim($ossUrl, '/') . '/' . ltrim($path, '/');
         }
 
-        // Fallback ke local storage
-        return asset('storage/' . $path);
+        return Storage::disk('public')->url($path);
     }
 }

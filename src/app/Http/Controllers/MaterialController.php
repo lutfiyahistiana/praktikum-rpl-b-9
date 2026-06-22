@@ -50,7 +50,7 @@ class MaterialController extends Controller
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $fileName = $file->getClientOriginalName();
-                $filePath = $file->store('materials', 'oss');
+                $filePath = $file->store('materials', 'public');
                 $fileType = $file->getClientMimeType();
 
                 MaterialFile::create([
@@ -76,7 +76,7 @@ class MaterialController extends Controller
 
         // Hapus file fisik dari storage sebelum hapus record
         foreach ($material->files as $file) {
-            \Illuminate\Support\Facades\Storage::disk('oss')->delete($file->file_path);
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($file->file_path);
         }
 
         $material->delete(); // DB records terhapus otomatis karena onDelete cascade
@@ -91,7 +91,7 @@ class MaterialController extends Controller
     public function download($id)
     {
         $file = MaterialFile::findOrFail($id);
-        $url = \Illuminate\Support\Facades\Storage::disk('oss')->url($file->file_path);
+        $url = \App\Helpers\StorageHelper::url($file->file_path);
         return redirect($url);
     }
 }
