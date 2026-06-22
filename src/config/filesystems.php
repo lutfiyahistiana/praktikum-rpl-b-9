@@ -61,13 +61,15 @@ return [
         ],
 
         'oss' => [
-            'driver'     => 'oss',
-            'access_id'  => env('OSS_ACCESS_KEY_ID'),
-            'access_key' => env('OSS_ACCESS_KEY_SECRET'),
-            'bucket'     => env('OSS_BUCKET'),
-            'endpoint'   => env('OSS_ENDPOINT'),
-            'url'        => env('OSS_URL'),
-            'throw'      => false,
+            'driver'                  => 's3',
+            'key'                     => env('OSS_ACCESS_KEY_ID'),
+            'secret'                  => env('OSS_ACCESS_KEY_SECRET'),
+            'region'                  => env('OSS_REGION', 'ap-southeast-5'),
+            'bucket'                  => env('OSS_BUCKET'),
+            'url'                     => env('OSS_URL'),
+            'endpoint'                => env('OSS_ENDPOINT_URL'),
+            'use_path_style_endpoint' => false,
+            'throw'                   => false,
         ],
 
     ],
