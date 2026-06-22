@@ -90,9 +90,11 @@ class StorageHelper
 
     public static function store(UploadedFile $file, string $directory): string
     {
-        // Sanitize filename — replace spaces with underscores
-        $originalName = str_replace(' ', '_', $file->getClientOriginalName());
-        $fileName = uniqid() . '_' . $originalName;
+        // Sanitize filename — replace spaces and special chars
+        $ext = $file->getClientOriginalExtension();
+        $name = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+        $safeName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
+        $fileName = uniqid() . '_' . $safeName . '.' . $ext;
         return self::storeAs($file, $directory, $fileName);
     }
 

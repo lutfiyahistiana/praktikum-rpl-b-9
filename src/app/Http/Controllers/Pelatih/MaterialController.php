@@ -50,14 +50,17 @@ class MaterialController extends Controller
 
         if ($request->hasFile('file_materi')) {
             foreach ($request->file('file_materi') as $file) {
-                $fileName = uniqid() . '_' . $file->getClientOriginalName();
+                $ext      = $file->getClientOriginalExtension();
+                $name     = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
+                $fileName = uniqid() . '_' . $safeName . '.' . $ext;
                 $filePath = \App\Helpers\StorageHelper::storeAs($file, 'materials', $fileName);
 
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
-                    'file_type'   => $file->getClientOriginalExtension(),
+                    'file_type'   => $ext,
                     'file_path'   => $filePath,
-                    'file_name'   => $file->getClientOriginalName(),
+                    'file_name'   => $file->getClientOriginalName(), // simpan nama asli untuk display
                 ]);
             }
         }
@@ -111,12 +114,15 @@ class MaterialController extends Controller
         // Upload file baru
         if ($request->hasFile('file_materi')) {
             foreach ($request->file('file_materi') as $file) {
-                $fileName = uniqid() . '_' . $file->getClientOriginalName();
+                $ext      = $file->getClientOriginalExtension();
+                $name     = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeName = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $name);
+                $fileName = uniqid() . '_' . $safeName . '.' . $ext;
                 $filePath = \App\Helpers\StorageHelper::storeAs($file, 'materials', $fileName);
 
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
-                    'file_type'   => $file->getClientOriginalExtension(),
+                    'file_type'   => $ext,
                     'file_path'   => $filePath,
                     'file_name'   => $file->getClientOriginalName(),
                 ]);
