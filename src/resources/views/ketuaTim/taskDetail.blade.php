@@ -124,10 +124,20 @@
 
                         <div class="w-full max-w-[400px] space-y-3">
 
-                            {{-- Kotak Preview Lampiran --}}
-                            <div id="attachments-list" class="flex flex-col gap-3">
-                                {{-- Kotak kosong default --}}
-                                <div id="empty-attachment-box" class="w-16 h-16 border border-gray-300 rounded bg-white"></div>
+                            {{-- Preview Lampiran (hanya muncul kalau ada) --}}
+                            <div id="attachments-list" class="flex flex-col gap-3"></div>
+
+                            {{-- Link preview (hanya muncul kalau ada link) --}}
+                            <div id="link-preview" class="hidden flex items-center gap-2 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                                <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                </svg>
+                                <span id="link-preview-text" class="text-sm text-blue-700 truncate flex-1"></span>
+                                <button type="button" onclick="removeLink()" class="text-gray-400 hover:text-red-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
                             </div>
 
                             {{-- Dropdown wrapper --}}
@@ -265,33 +275,20 @@
             if (!url) return;
 
             document.getElementById('lampiran_link_input').value = url;
-            const list = document.getElementById('attachments-list');
-            list.innerHTML = `
-                <div class="flex items-center bg-white rounded-xl border overflow-hidden border-[#E6E6E6] shadow-[0_1px_3px_rgba(0,0,0,0.07)] min-h-[64px]">
-                    <div class="shrink-0 w-14 h-14 flex items-center justify-center overflow-hidden bg-blue-50">
-                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0 px-3 py-2">
-                        <a href="${url}" target="_blank" class="text-sm font-medium text-gray-800 truncate leading-snug underline block">${url}</a>
-                        <p class="text-xs mt-0.5 text-[var(--color-secondary)]">Link</p>
-                    </div>
-                    <button type="button" class="shrink-0 px-3 self-stretch flex items-center transition-colors text-[#d1d5db] hover:text-[#ef4444] hover:bg-[#fef2f2]" onclick="removeAttachment()">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                        </svg>
-                    </button>
-                </div>
-            `;
+            document.getElementById('link-preview-text').textContent = url;
+            document.getElementById('link-preview').classList.remove('hidden');
             closeLinkInput();
         }
 
-        function removeAttachment() {
+        function removeLink() {
             document.getElementById('lampiran_link_input').value = '';
+            document.getElementById('link-preview').classList.add('hidden');
+            document.getElementById('link-preview-text').textContent = '';
+        }
+
+        function removeAttachment() {
             document.getElementById('fileUpload').value = '';
-            const list = document.getElementById('attachments-list');
-            list.innerHTML = '<div id="empty-attachment-box" class="w-16 h-16 border border-gray-300 rounded bg-white"></div>';
+            document.getElementById('attachments-list').innerHTML = '';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -302,8 +299,7 @@
                         const file = this.files[0];
                         document.getElementById('attachment-dropdown').classList.add('hidden');
                         
-                        const list = document.getElementById('attachments-list');
-                        list.innerHTML = `
+                        document.getElementById('attachments-list').innerHTML = `
                             <div class="flex items-center bg-white rounded-xl border overflow-hidden border-[#E6E6E6] shadow-[0_1px_3px_rgba(0,0,0,0.07)] min-h-[64px]">
                                 <div class="shrink-0 w-14 h-14 flex items-center justify-center overflow-hidden bg-red-50">
                                     <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 24 24">
@@ -311,8 +307,8 @@
                                     </svg>
                                 </div>
                                 <div class="flex-1 min-w-0 px-3 py-2">
-                                    <p class="text-sm font-medium text-gray-800 truncate leading-snug underline">${file.name}</p>
-                                    <p class="text-xs mt-0.5 text-[var(--color-secondary)]">File (${(file.size / 1024 / 1024).toFixed(2)} MB)</p>
+                                    <p class="text-sm font-medium text-gray-800 truncate leading-snug">${file.name}</p>
+                                    <p class="text-xs mt-0.5 text-gray-400">File (${(file.size / 1024 / 1024).toFixed(2)} MB)</p>
                                 </div>
                                 <button type="button" class="shrink-0 px-3 self-stretch flex items-center transition-colors text-[#d1d5db] hover:text-[#ef4444] hover:bg-[#fef2f2]" onclick="removeAttachment()">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
