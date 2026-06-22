@@ -3,6 +3,7 @@ nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_mysql", "php82Ex
 
 [phases.install]
 cmds = [
+    "composer require league/flysystem-aws-s3-v3:^3.0 --no-interaction --no-scripts --no-plugins",
     "composer install --no-dev --optimize-autoloader --no-interaction",
     "npm ci"
 ]
