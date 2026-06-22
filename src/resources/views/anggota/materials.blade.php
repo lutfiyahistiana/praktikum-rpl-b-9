@@ -54,7 +54,7 @@
                         }
                     @endphp
                     <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-colab-gray-light transition-colors">
-                        <a href="{{ \Illuminate\Support\Facades\Storage::disk('oss')->url($file->file_path) }}" target="_blank" class="flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
+                        <a href="{{ \App\Helpers\StorageHelper::url($file->file_path) }}" target="_blank" class="flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
                             <div class="w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0 {{ $iconBg }}">
                                 @if ($isVideo)
                                     <svg class="w-4 h-4 {{ $iconColor }}" fill="currentColor" viewBox="0 0 24 24">
