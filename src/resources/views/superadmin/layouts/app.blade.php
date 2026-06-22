@@ -163,7 +163,7 @@
             <div class="relative flex items-center gap-3 ml-auto" x-data="{ open: false }">
 
                 @if(auth()->user()->photo)
-                    <img src="{{ asset('storage/' . auth()->user()->photo) }}"
+                    <img src="{{ \App\Helpers\StorageHelper::url(auth()->user()->photo) }}"
                          alt="Foto Profil"
                          class="w-10 h-10 rounded-full object-cover flex-shrink-0">
                 @else
