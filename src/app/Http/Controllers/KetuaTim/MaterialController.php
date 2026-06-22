@@ -42,11 +42,7 @@ class MaterialController extends Controller
                             $background = '#DBEAFE';
                         }
 
-                        $size = 'Tidak diketahui';
-                        if ($file->file_path && file_exists(public_path($file->file_path))) {
-                            $bytes = filesize(public_path($file->file_path));
-                            $size = number_format($bytes / 1048576, 2) . ' MB';
-                        }
+                        $size = strtoupper(pathinfo($file->file_name, PATHINFO_EXTENSION)) ?: 'File';
 
                         $files[] = [
                             'id'         => $file->id_material_file,
