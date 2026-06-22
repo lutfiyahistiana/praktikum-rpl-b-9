@@ -103,7 +103,7 @@ class MaterialController extends Controller
         if ($request->has('delete_files')) {
             $filesToDelete = \App\Models\MaterialFile::whereIn('id_material_file', $request->delete_files)->get();
             foreach ($filesToDelete as $file) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('/storage/', '', $file->file_path));
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($file->file_path);
                 $file->delete();
             }
         }
@@ -132,7 +132,7 @@ class MaterialController extends Controller
 
         // Hapus semua file fisik
         foreach ($material->files as $file) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete(str_replace('/storage/', '', $file->file_path));
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($file->file_path);
         }
 
         $material->delete();

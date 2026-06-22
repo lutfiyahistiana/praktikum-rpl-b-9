@@ -22,4 +22,24 @@ class TaskController extends Controller
         );
         return view('superadmin.taskList', $data);
     }
+
+    public function show($id)
+    {
+        $task = Task::with(['assignedTo', 'assignedBy', 'progresses'])->where('id_task', $id)->firstOrFail();
+
+        $statusStr = 'Berjalan';
+        if ($task->status === 'done') {
+            $statusStr = 'Selesai';
+        } elseif ($task->deadline && $task->deadline < now()) {
+            $statusStr = 'Terlambat';
+        }
+
+        $data = [
+            'title'    => 'Detail Tugas',
+            'menuTask' => 'active',
+            'task'     => $task,
+            'status'   => $statusStr,
+        ];
+        return view('superadmin.taskDetail', $data);
+    }
 }
