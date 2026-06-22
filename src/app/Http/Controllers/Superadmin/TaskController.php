@@ -25,12 +25,20 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = Task::with(['assignedTo'])->findOrFail($id);
+        $task = Task::with(['assignedTo', 'assignedBy', 'progresses'])->where('id_task', $id)->firstOrFail();
+
+        $statusStr = 'Berjalan';
+        if ($task->status === 'done') {
+            $statusStr = 'Selesai';
+        } elseif ($task->deadline && $task->deadline < now()) {
+            $statusStr = 'Terlambat';
+        }
 
         $data = [
             'title'    => 'Detail Tugas',
             'menuTask' => 'active',
             'task'     => $task,
+            'status'   => $statusStr,
         ];
         return view('superadmin.taskDetail', $data);
     }

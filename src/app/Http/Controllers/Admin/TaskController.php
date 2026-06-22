@@ -59,7 +59,7 @@ class TaskController extends Controller
 
     public function show($id)
     {
-        $task = \App\Models\Task::with(['assignee', 'assigner'])->findOrFail($id);
+        $task = \App\Models\Task::with(['assignee', 'assignedBy', 'progresses'])->where('id_task', $id)->firstOrFail();
 
         $teamName = 'Tidak ada Tim';
         $teamMember = \App\Models\TeamMember::with('team')->where('anggota_id', $task->assigned_to)->first();
@@ -67,11 +67,19 @@ class TaskController extends Controller
             $teamName = $teamMember->team->team_name;
         }
 
+        $statusStr = 'Berjalan';
+        if ($task->status === 'done') {
+            $statusStr = 'Selesai';
+        } elseif ($task->deadline && $task->deadline < now()) {
+            $statusStr = 'Terlambat';
+        }
+
         $data = [
             'title'    => 'Detail Tugas',
             'menuTask' => 'active',
             'task'     => $task,
-            'teamName' => $teamName,
+            'team'     => $teamName,
+            'status'   => $statusStr,
         ];
         return view('admin.taskDetail', $data);
     }

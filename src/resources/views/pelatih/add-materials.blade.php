@@ -1,21 +1,47 @@
 @extends('pelatih.layouts.app')
 
+@section('back_button')
+    <a href="{{ route('pelatih.materials') }}" class="text-gray-500 hover:text-gray-800 transition-colors flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+    </a>
+@endsection
+
 @section('content')
     {{-- ========================== MAIN CONTENT ========================== --}}
-        <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main class="flex-1 px-4 sm:px-6 lg:px-8 pb-6 space-y-6">
 
-            {{-- Page Title --}}
-            <div class="mb-6">
-                <h1 class="text-xl font-bold text-gray-900">Tambah Materi</h1>
-            </div>
 
             {{-- ========== FORM TAMBAH MATERI ========== --}}
-            <form action="{{ route('pelatih.materials.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form id="form-tambah-materi" action="{{ route('pelatih.materials.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                 @csrf
 
                 {{-- Card: Informasi BAB --}}
                 <div class="bg-white border border-[#E6E6E6] rounded-lg p-6">
                     <h2 class="text-lg font-bold text-gray-900 mb-4">Informasi BAB</h2>
+
+                    {{-- Pilih Divisi --}}
+                    <div class="mb-5">
+                        <label for="division_id" class="block text-sm font-medium text-gray-700 mb-1">Divisi <span class="text-red-500">*</span></label>
+                        <div id="division-wrapper" class="flex items-center gap-2 border border-[#E6E6E6] rounded-lg px-3 py-2.5 bg-white focus-within:border-[#008CFF] focus-within:ring-1 focus-within:ring-[#008CFF] transition-colors">
+                            <svg class="w-5 h-5 text-[#969696] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <select id="division_id" name="division_id" class="flex-1 bg-transparent text-sm text-gray-900 outline-none">
+                                <option value="">-- Pilih Divisi --</option>
+                                @foreach($divisions as $division)
+                                    <option value="{{ $division->id_division }}" {{ old('division_id') == $division->id_division ? 'selected' : '' }}>
+                                        {{ $division->division_name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <p id="division-error" class="text-xs text-red-500 mt-1 hidden">Divisi wajib dipilih sebelum menyimpan materi.</p>
+                        @error('division_id')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
                     {{-- Judul BAB --}}
                     <div class="mb-5">
@@ -24,14 +50,20 @@
                             <svg class="w-5 h-5 text-[#969696] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/>
                             </svg>
-                            <input type="text" id="judul_bab" name="judul_bab" class="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder-[#969696]" placeholder="Contoh: BAB I Pengenalan Robotika" required>
+                            <input type="text" id="judul_bab" name="judul_bab" value="{{ old('judul_bab') }}" class="flex-1 bg-transparent text-sm text-gray-900 outline-none placeholder-[#969696]" placeholder="Contoh: BAB I Pengenalan Robotika" required>
                         </div>
+                        @error('judul_bab')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
 
                     {{-- Deskripsi BAB --}}
                     <div>
                         <label for="deskripsi_bab" class="block text-sm font-medium text-gray-700 mb-1">Deskripsi <span class="text-xs text-[#969696] font-normal">(opsional)</span></label>
-                        <textarea id="deskripsi_bab" name="deskripsi_bab" rows="3" class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2.5 text-sm text-gray-900 outline-none placeholder-[#969696] focus:border-[#008CFF] focus:ring-1 focus:ring-[#008CFF] transition-colors resize-y" placeholder="Tuliskan deskripsi singkat tentang BAB ini..."></textarea>
+                        <textarea id="deskripsi_bab" name="deskripsi_bab" rows="3" class="w-full border border-[#E6E6E6] rounded-lg px-3 py-2.5 text-sm text-gray-900 outline-none placeholder-[#969696] focus:border-[#008CFF] focus:ring-1 focus:ring-[#008CFF] transition-colors resize-y" placeholder="Tuliskan deskripsi singkat tentang BAB ini...">{{ old('deskripsi_bab') }}</textarea>
+                        @error('deskripsi_bab')
+                            <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
@@ -72,6 +104,38 @@
 @endsection
 
 @section('scripts')
+<script>
+    // Validasi form: divisi wajib dipilih
+    document.getElementById('form-tambah-materi').addEventListener('submit', function (e) {
+        const divisionSelect  = document.getElementById('division_id');
+        const divisionWrapper = document.getElementById('division-wrapper');
+        const divisionError   = document.getElementById('division-error');
+
+        if (!divisionSelect.value) {
+            e.preventDefault();
+            divisionWrapper.classList.add('border-red-400', 'ring-1', 'ring-red-400');
+            divisionWrapper.classList.remove('border-[#E6E6E6]');
+            divisionError.classList.remove('hidden');
+            divisionSelect.focus();
+            return;
+        }
+
+        divisionWrapper.classList.remove('border-red-400', 'ring-1', 'ring-red-400');
+        divisionWrapper.classList.add('border-[#E6E6E6]');
+        divisionError.classList.add('hidden');
+    });
+
+    // Reset border saat divisi dipilih
+    document.getElementById('division_id').addEventListener('change', function () {
+        const divisionWrapper = document.getElementById('division-wrapper');
+        const divisionError   = document.getElementById('division-error');
+        if (this.value) {
+            divisionWrapper.classList.remove('border-red-400', 'ring-1', 'ring-red-400');
+            divisionWrapper.classList.add('border-[#E6E6E6]');
+            divisionError.classList.add('hidden');
+        }
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const fileInput = document.getElementById('file_materi');
