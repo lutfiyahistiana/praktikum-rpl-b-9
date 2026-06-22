@@ -11,7 +11,9 @@ class MaterialController extends Controller
 {
     public function showMaterials()
     {
-        $materials = Material::with('files')->get();
+        $materials = Material::with('files')
+            ->orderBy('created_at')
+            ->get();
 
         $data = array(
             'title'         => 'Materials',
