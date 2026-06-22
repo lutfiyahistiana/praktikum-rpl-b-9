@@ -114,8 +114,8 @@
     </div>
 
 <!-- Edit Account Modal -->
-<div id="editAccountModal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50 overflow-y-auto pt-20 pb-10">
-    <div class="bg-white rounded-2xl w-full max-w-2xl p-6 relative">
+<div id="editAccountModal" class="fixed inset-0 z-50 flex items-start justify-center hidden bg-black bg-opacity-50 pt-10">
+    <div id="editModalContent" class="bg-white rounded-2xl w-full max-w-2xl p-6 relative max-h-[90vh]">
         <button onclick="closeEditAccountModal()" class="absolute top-4 right-4 text-gray-500 hover:text-black cursor-pointer">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -164,8 +164,6 @@
                         <label class="block text-sm font-semibold text-gray-700 mb-2">No HP</label>
                         <input type="text" id="edit_no_hp" name="no_hp" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
                     </div>
-                    <div class="mb-4"></div> <!-- Empty cell for alignment -->
-
                     <div class="mb-4">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Divisi</label>
                         <select id="edit_division_id" name="division_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
@@ -175,7 +173,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="mb-6">
+                    <div class="mb-4">
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Tim</label>
                         <select id="edit_team_id" name="team_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
                             <option value="">Tidak ada Tim</option>
@@ -184,9 +182,29 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="mb-6 col-span-2">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Hak Akses (Role)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            @foreach($rolesList as $role)
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" name="roles[]" value="{{ $role->id_role }}" class="edit-role-checkbox w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500">
+                                    <span class="ml-2 text-sm text-gray-700">{{ ucfirst(str_replace('_', ' ', $role->role_name)) }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
-                <button type="submit" class="w-full bg-[#008CFF] hover:bg-[#0070cc] text-white font-semibold py-3 rounded-lg transition-colors cursor-pointer">Simpan Perubahan</button>
+                <div class="flex gap-4">
+                    <button type="submit" class="w-full bg-[#008CFF] hover:bg-[#0070cc] text-white font-semibold py-3 rounded-lg transition-colors cursor-pointer">Simpan Perubahan</button>
+                    <button type="button" onclick="confirmDeleteAccount()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-lg transition-colors cursor-pointer">Hapus Akun</button>
+                </div>
             </div>
+        </form>
+
+        <form id="deleteAccountForm" action="{{ route('admin.manageRole.destroy') }}" method="POST" class="hidden">
+            @csrf
+            <input type="hidden" name="id_user" id="delete_id_user">
         </form>
     </div>
 </div>
@@ -203,8 +221,11 @@
 
     function openEditAccountModal() {
         document.getElementById('editAccountModal').classList.remove('hidden');
+        document.getElementById('editAccountModal').classList.remove('items-center');
+        document.getElementById('editAccountModal').classList.add('items-start', 'pt-10');
         document.getElementById('editUserSelect').value = '';
         document.getElementById('editFormFields').classList.add('hidden');
+        document.getElementById('editModalContent').classList.remove('overflow-y-auto');
     }
     function closeEditAccountModal() {
         document.getElementById('editAccountModal').classList.add('hidden');
@@ -225,7 +246,24 @@
             document.getElementById('edit_team_id').value = user.tim_id || '';
             document.getElementById('edit_password').value = ''; // Always empty
 
+            // Populate roles checkboxes
+            const roleCheckboxes = document.querySelectorAll('.edit-role-checkbox');
+            roleCheckboxes.forEach(cb => {
+                cb.checked = user.roles && user.roles.includes(parseInt(cb.value));
+            });
+
+            document.getElementById('delete_id_user').value = userId;
+
             document.getElementById('editFormFields').classList.remove('hidden');
+            document.getElementById('editModalContent').classList.add('overflow-y-auto');
+            document.getElementById('editAccountModal').classList.remove('items-start', 'pt-10');
+            document.getElementById('editAccountModal').classList.add('items-center');
+        }
+    }
+
+    function confirmDeleteAccount() {
+        if (confirm('Apakah Anda yakin ingin menghapus akun ini? Tindakan ini tidak dapat dibatalkan.')) {
+            document.getElementById('deleteAccountForm').submit();
         }
     }
 </script>

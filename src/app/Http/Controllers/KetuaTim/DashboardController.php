@@ -14,8 +14,9 @@ class DashboardController extends Controller
         $memberIds = $team ? $team->members()->pluck('anggota_id')->toArray() : [];
         $relevantUserIds = array_unique(array_merge([$user_id], $memberIds));
 
-        $tasksQuery = \App\Models\Task::where(function($q) use ($relevantUserIds, $user_id) {
-            $q->whereIn('assigned_to', $relevantUserIds)->orWhere('assigned_by', $user_id);
+        $tasksQuery = \App\Models\Task::where(function ($query) use ($relevantUserIds, $user_id) {
+            $query->whereIn('assigned_to', $relevantUserIds)
+                  ->orWhere('assigned_by', $user_id);
         });
         
         $total_tugas = (clone $tasksQuery)->count();

@@ -49,11 +49,13 @@ class MaterialController extends Controller
                         }
 
                         $files[] = [
-                            'name' => $file->file_name,
-                            'size' => $size,
-                            'color' => $color,
+                            'id'         => $file->id_material_file,
+                            'name'       => $file->file_name,
+                            'size'       => $size,
+                            'color'      => $color,
                             'background' => $background,
-                            'icon' => $icon,
+                            'icon'       => $icon,
+                            'path'       => $file->file_path,
                         ];
                     }
 
