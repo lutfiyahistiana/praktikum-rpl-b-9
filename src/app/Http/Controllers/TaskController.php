@@ -7,23 +7,36 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
+    private function addStatusLabel(Task $task): Task
+    {
+        if ($task->status === 'done') {
+            $task->status_label = 'Selesai';
+        } elseif (in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline)) {
+            $task->status_label = 'Terlambat';
+            $task->is_overdue = true;
+        } elseif ($task->status === 'in_progress') {
+            $task->status_label = 'Sedang Dikerjakan';
+            $task->is_overdue = false;
+        } else {
+            $task->status_label = 'Belum Dikerjakan';
+            $task->is_overdue = false;
+        }
+        return $task;
+    }
+
     // GET /tasks 
     public function index(Request $request)
     {
         $user = $request->user();
         $userRoles = $user->roles->pluck('role_name')->toArray();
 
-        // Jika user HANYA memiliki role anggota_tim (atau jika sedang memakai active_role anggota_tim)
-        // Kita limit task yang dikembalikan hanya task miliknya
         if (in_array('anggota_tim', $userRoles) && !in_array('admin', $userRoles) && !in_array('superadmin', $userRoles) && !in_array('ketua_tim', $userRoles)) {
             $tasks = Task::where('assigned_to', $user->id_user)->get();
         } else {
             $tasks = Task::all();
         }
 
-        foreach ($tasks as $task) {
-            $task->is_overdue = in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline);
-        }
+        $tasks->each(fn($task) => $this->addStatusLabel($task));
 
         return response()->json([
             'success' => true,
@@ -100,7 +113,7 @@ class TaskController extends Controller
         }
 
         // Cek otomatis terlambat
-        $task->is_overdue = in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline);
+        $this->addStatusLabel($task);
 
         return response()->json([
             'success' => true,
