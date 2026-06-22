@@ -51,7 +51,7 @@ class MaterialController extends Controller
         if ($request->hasFile('file_materi')) {
             foreach ($request->file('file_materi') as $file) {
                 $fileName = uniqid() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('materials', $fileName, 'oss');
+                $filePath = \App\Helpers\StorageHelper::storeAs($file, 'materials', $fileName);
 
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
@@ -103,7 +103,7 @@ class MaterialController extends Controller
         if ($request->has('delete_files')) {
             $filesToDelete = \App\Models\MaterialFile::whereIn('id_material_file', $request->delete_files)->get();
             foreach ($filesToDelete as $file) {
-                \Illuminate\Support\Facades\Storage::disk('oss')->delete($file->file_path);
+                \App\Helpers\StorageHelper::delete($file->file_path);
                 $file->delete();
             }
         }
@@ -112,7 +112,7 @@ class MaterialController extends Controller
         if ($request->hasFile('file_materi')) {
             foreach ($request->file('file_materi') as $file) {
                 $fileName = uniqid() . '_' . $file->getClientOriginalName();
-                $filePath = $file->storeAs('materials', $fileName, 'oss');
+                $filePath = \App\Helpers\StorageHelper::storeAs($file, 'materials', $fileName);
 
                 \App\Models\MaterialFile::create([
                     'material_id' => $material->id_material,
@@ -130,9 +130,8 @@ class MaterialController extends Controller
     {
         $material = Material::with('files')->findOrFail($id);
 
-        // Hapus semua file fisik
         foreach ($material->files as $file) {
-            \Illuminate\Support\Facades\Storage::disk('oss')->delete($file->file_path);
+            \App\Helpers\StorageHelper::delete($file->file_path);
         }
 
         $material->delete();

@@ -65,7 +65,7 @@ class ProfilController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-            $path = $request->file('photo')->store('profile-photos', 'oss');
+            $path = \App\Helpers\StorageHelper::store($request->file('photo'), 'profile-photos');
             $user->photo = $path;
         }
 
