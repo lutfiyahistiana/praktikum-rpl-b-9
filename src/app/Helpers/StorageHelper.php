@@ -3,28 +3,120 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class StorageHelper
 {
-    public static function disk(): string
+    private static function ossConfigured(): bool
     {
-        return (env('OSS_ACCESS_KEY_ID') && env('OSS_BUCKET')) ? 'oss' : 'public';
+        return env('OSS_ACCESS_KEY_ID')
+            && env('OSS_ACCESS_KEY_SECRET')
+            && env('OSS_BUCKET')
+            && env('OSS_ENDPOINT');
     }
 
-    public static function store(\Illuminate\Http\UploadedFile $file, string $directory): string
+    /**
+     * Upload file to OSS via signed HTTP PUT request.
+     * Returns the object path (key).
+     */
+    private static function uploadToOss(UploadedFile $file, string $directory, string $fileName): string
     {
-        return $file->store($directory, self::disk());
+        $key        = trim($directory, '/') . '/' . $fileName;
+        $bucket     = env('OSS_BUCKET');
+        $endpoint   = env('OSS_ENDPOINT');
+        $accessId   = env('OSS_ACCESS_KEY_ID');
+        $accessKey  = env('OSS_ACCESS_KEY_SECRET');
+        $date       = gmdate('D, d M Y H:i:s \G\M\T');
+        $contentType = $file->getMimeType();
+        $content    = file_get_contents($file->getRealPath());
+        $md5        = base64_encode(md5($content, true));
+
+        $stringToSign = "PUT\n{$md5}\n{$contentType}\n{$date}\n/{$bucket}/{$key}";
+        $signature    = base64_encode(hash_hmac('sha1', $stringToSign, $accessKey, true));
+
+        $url = "https://{$bucket}.{$endpoint}/{$key}";
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_CUSTOMREQUEST  => 'PUT',
+            CURLOPT_POSTFIELDS     => $content,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => [
+                "Content-Type: {$contentType}",
+                "Content-MD5: {$md5}",
+                "Date: {$date}",
+                "Authorization: OSS {$accessId}:{$signature}",
+            ],
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode !== 200) {
+            throw new \Exception("OSS upload failed with HTTP {$httpCode}: {$response}");
+        }
+
+        return $key;
     }
 
-    public static function storeAs(\Illuminate\Http\UploadedFile $file, string $directory, string $fileName): string
+    /**
+     * Delete file from OSS via signed HTTP DELETE request.
+     */
+    private static function deleteFromOss(string $path): void
     {
-        return $file->storeAs($directory, $fileName, self::disk());
+        $key      = ltrim($path, '/');
+        $bucket   = env('OSS_BUCKET');
+        $endpoint = env('OSS_ENDPOINT');
+        $accessId = env('OSS_ACCESS_KEY_ID');
+        $accessKey = env('OSS_ACCESS_KEY_SECRET');
+        $date     = gmdate('D, d M Y H:i:s \G\M\T');
+
+        $stringToSign = "DELETE\n\n\n{$date}\n/{$bucket}/{$key}";
+        $signature    = base64_encode(hash_hmac('sha1', $stringToSign, $accessKey, true));
+
+        $url = "https://{$bucket}.{$endpoint}/{$key}";
+
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_CUSTOMREQUEST  => 'DELETE',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER     => [
+                "Date: {$date}",
+                "Authorization: OSS {$accessId}:{$signature}",
+            ],
+        ]);
+        curl_exec($ch);
+        curl_close($ch);
+    }
+
+    public static function store(UploadedFile $file, string $directory): string
+    {
+        $fileName = uniqid() . '_' . $file->getClientOriginalName();
+        return self::storeAs($file, $directory, $fileName);
+    }
+
+    public static function storeAs(UploadedFile $file, string $directory, string $fileName): string
+    {
+        if (self::ossConfigured()) {
+            try {
+                return self::uploadToOss($file, $directory, $fileName);
+            } catch (\Throwable $e) {
+                // Fallback to public disk
+            }
+        }
+
+        return $file->storeAs($directory, $fileName, 'public');
     }
 
     public static function delete(string $path): void
     {
         try {
-            Storage::disk(self::disk())->delete($path);
+            if (self::ossConfigured()) {
+                self::deleteFromOss($path);
+            } else {
+                Storage::disk('public')->delete($path);
+            }
         } catch (\Throwable $e) {
             // Fail silently
         }
@@ -38,7 +130,7 @@ class StorageHelper
 
         $ossUrl = env('OSS_URL');
 
-        if ($ossUrl && env('OSS_ACCESS_KEY_ID')) {
+        if ($ossUrl && self::ossConfigured()) {
             return rtrim($ossUrl, '/') . '/' . ltrim($path, '/');
         }
 
