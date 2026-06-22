@@ -36,7 +36,7 @@
                         <div class="space-y-2">
                             @forelse($material->files as $file)
                             <div class="flex items-center gap-3 p-3 rounded-lg border border-[#E6E6E6] hover:shadow-sm transition-shadow">
-                                <a href="{{ asset($file->file_path) }}" target="_blank" class="flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
+                                <a href="{{ \Illuminate\Support\Facades\Storage::disk('oss')->url($file->file_path) }}" target="_blank" class="flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
                                     <div class="w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0 bg-blue-100">
                                         <svg class="w-4 h-4 text-[#008CFF]" fill="currentColor" viewBox="0 0 24 24">
                                             <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>

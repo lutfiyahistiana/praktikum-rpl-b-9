@@ -74,7 +74,7 @@ class TaskController extends Controller
         // Upload file kalau ada
         $filePath = null;
         if ($request->hasFile('file_tugas')) {
-            $filePath = $request->file('file_tugas')->store('task-submissions', 'public');
+            $filePath = $request->file('file_tugas')->store('task-submissions', 'oss');
         }
 
         TaskProgress::create([

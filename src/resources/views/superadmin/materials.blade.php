@@ -49,7 +49,7 @@
                                         }
                                     @endphp
                                     <div class="box-border p-3 rounded-lg flex items-center gap-3 hover:bg-[#F5F7FA] transition-colors">
-                                        <a href="{{ asset($file->file_path) }}" target="_blank" class="box-border flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
+                                        <a href="{{ \Illuminate\Support\Facades\Storage::disk('oss')->url($file->file_path) }}" target="_blank" class="box-border flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
                                             <div style="background: {{ $background }}; color: {{ $color }};" class="box-border w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                                 @if ($icon === 'play')
                                                     <svg class="box-border w-4 h-4" fill="currentColor" viewBox="0 0 24 24">

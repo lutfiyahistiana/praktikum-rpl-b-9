@@ -24,7 +24,7 @@
                     @if($user->photo)
                         <img
                             id="preview-foto"
-                            src="{{ asset('storage/' . $user->photo) }}"
+                            src="{{ $user->photo ? \Illuminate\Support\Facades\Storage::disk('oss')->url($user->photo) : asset('images/person.png') }}"
                             alt="Foto Profil"
                             class="w-20 h-20 rounded-full object-cover border">
                     @else

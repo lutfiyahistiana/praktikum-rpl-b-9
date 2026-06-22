@@ -69,7 +69,7 @@
                                                class="text-xs text-[#2563EB] underline">🔗 {{ $progress->link_url }}</a>
                                         @endif
                                         @if ($progress->file_path)
-                                            <a href="{{ asset('storage/' . $progress->file_path) }}" target="_blank"
+                                            <a href="{{ \Illuminate\Support\Facades\Storage::disk('oss')->url($progress->file_path) }}" target="_blank"
                                                class="block text-xs text-[#2563EB] underline mt-1">📎 Lihat File</a>
                                         @endif
                                     </div>
