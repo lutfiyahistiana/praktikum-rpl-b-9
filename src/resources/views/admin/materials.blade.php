@@ -76,7 +76,10 @@
                         <a href="{{ route('admin.materials', ['division_id' => $division->id_division]) }}"
                            class="box-border bg-white border border-[#E6E6E6] rounded-lg overflow-hidden shadow-sm no-underline text-inherit hover:bg-gray-50 transition-colors">
                             <div class="box-border w-full p-5 flex items-center justify-between gap-4">
-                                <span class="box-border text-base leading-[1.35] font-extrabold text-[#1F2937]">{{ $division->division_name }}</span>
+                                <div>
+                                    <span class="box-border text-base leading-[1.35] font-extrabold text-[#1F2937]">{{ $division->division_name }}</span>
+                                    <p class="text-xs text-[#969696] mt-0.5">{{ $division->materials_count }} materi</p>
+                                </div>
                                 <span class="box-border w-8 h-8 border border-[#E6E6E6] rounded-full inline-flex items-center justify-center text-[#969696] shrink-0">
                                     <svg class="box-border w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
