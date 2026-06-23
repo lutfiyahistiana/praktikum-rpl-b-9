@@ -9,9 +9,27 @@ use App\Models\MaterialFile;
 class MaterialController extends Controller
 {
     // GET /materials — lihat semua materi
-    public function index()
+    public function index(Request $request)
     {
-        $materials = Material::with(['uploader', 'files'])->get();
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+
+        $isPrivileged = array_intersect(['admin', 'superadmin', 'ketua_tim', 'pelatih'], $userRoles);
+
+        if ($isPrivileged) {
+            // Admin, superadmin, ketua_tim, pelatih lihat semua
+            $materials = Material::with(['uploader', 'files'])->get();
+        } else {
+            // Anggota hanya lihat materi divisi mereka
+            $divisionMember = \App\Models\DivisionMember::where('anggota_id', $user->id_user)->first();
+            if ($divisionMember) {
+                $materials = Material::with(['uploader', 'files'])
+                    ->where('division_id', $divisionMember->division_id)
+                    ->get();
+            } else {
+                $materials = collect();
+            }
+        }
 
         return response()->json([
             'success' => true,
