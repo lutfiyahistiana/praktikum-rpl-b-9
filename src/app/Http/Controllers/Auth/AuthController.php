@@ -159,6 +159,8 @@ class AuthController extends Controller
                 'divisi'          => $division ? $division->division->division_name : null,
                 'roles'           => $user->roles->pluck('role_name'),
                 'active_role'     => $request->user()->currentAccessToken()->name,
+                'photo'           => $user->photo,
+                'photo_url'       => $user->photo ? \App\Helpers\StorageHelper::url($user->photo) : null,
             ],
         ]);
     }
