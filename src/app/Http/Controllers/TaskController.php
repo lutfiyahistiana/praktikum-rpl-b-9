@@ -123,6 +123,34 @@ class TaskController extends Controller
         ]);
     }
 
+    // DELETE /tasks/{id}/revert — anggota batal kirim
+    public function revert(Request $request, $id)
+    {
+        $user = $request->user();
+        $task = Task::findOrFail($id);
+
+        if ($task->assigned_to !== $user->id_user) {
+            return response()->json(['success' => false, 'message' => 'Anda tidak memiliki akses ke tugas ini.'], 403);
+        }
+
+        if ($task->status !== 'done') {
+            return response()->json(['success' => false, 'message' => 'Tugas belum selesai, tidak perlu dibatalkan.'], 422);
+        }
+
+        // Hapus progress terakhir
+        \App\Models\TaskProgress::where('task_id', $task->id_task)
+            ->latest()
+            ->first()?->delete();
+
+        $task->update(['status' => 'in_progress']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengiriman tugas berhasil dibatalkan.',
+            'data'    => $this->addStatusLabel($task->fresh()),
+        ]);
+    }
+
     // DELETE /tasks/{id} — hapus task
     public function destroy($id)
     {

@@ -62,6 +62,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/tasks', [TaskController::class, 'index']);
         Route::get('/tasks/{id}', [TaskController::class, 'show']);
         Route::put('/tasks/{id}', [TaskController::class, 'update']); // anggota hanya bisa update task miliknya
+        Route::delete('/tasks/{id}/revert', [TaskController::class, 'revert']); // anggota batal kirim
     });
 
     // Tasks Write — Admin/Superadmin/KetuaTim only
