@@ -92,4 +92,23 @@ class TaskController extends Controller
         return redirect()->route('anggota_tim.task.detail', $id)
                          ->with('success', 'Tugas berhasil diselesaikan!');
     }
+
+    public function revertProgress($id)
+    {
+        $userId = Auth::id();
+
+        $task = Task::where('id_task', $id)
+            ->where('assigned_to', $userId)
+            ->where('status', 'done')
+            ->firstOrFail();
+
+        // Hapus progress terakhir
+        $task->progresses()->latest()->first()?->delete();
+
+        // Kembalikan status ke in_progress
+        $task->update(['status' => 'in_progress']);
+
+        return redirect()->route('anggota_tim.task.detail', $id)
+                         ->with('success', 'Pengiriman tugas berhasil dibatalkan.');
+    }
 }

@@ -30,6 +30,7 @@ Route::prefix('anggota-tim')->name('anggota_tim.')->middleware(['auth', 'role:an
     Route::get('/task',      [\App\Http\Controllers\Anggota\TaskController::class,        'showTask'])->name('task');
     Route::get('/task/{id}', [\App\Http\Controllers\Anggota\TaskController::class,        'show'])->name('task.detail');
     Route::post('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'storeProgress'])->name('task.progress.store');
+    Route::delete('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'revertProgress'])->name('task.progress.revert');
     Route::get('/materials', [\App\Http\Controllers\Anggota\MaterialController::class,    'showMaterials'])->name('materials');
 });
 

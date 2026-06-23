@@ -161,6 +161,18 @@
                         <div class="text-center py-8">
                             <p class="text-sm font-semibold text-green-600 mt-4">Tugas ini sudah selesai!</p>
                             <p class="text-xs text-gray-400 mt-1">Kerja bagus!</p>
+
+                            {{-- Tombol Batal Kirim --}}
+                            <form action="{{ route('anggota_tim.task.progress.revert', $task->id_task) }}"
+                                  method="POST" class="mt-4"
+                                  onsubmit="return confirm('Yakin ingin membatalkan pengiriman tugas ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="px-4 py-2 text-sm border border-red-400 text-red-500 rounded-lg hover:bg-red-50 transition-colors">
+                                    Batal Kirim
+                                </button>
+                            </form>
                         </div>
                     @endif
 
