@@ -36,7 +36,7 @@
                                 <div class="box-border flex flex-col gap-2">
                                     @foreach ($material['files'] as $file)
                                         <div class="box-border p-3 rounded-lg flex items-center gap-3 hover:bg-gray-50 transition-colors">
-                                            <a href="{{ asset($file['path']) }}" target="_blank" class="box-border flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
+                                            <a href="{{ \App\Helpers\StorageHelper::url($file['path']) }}" target="_blank" class="box-border flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
                                                 <div style="background: {{ $file['background'] }}; color: {{ $file['color'] }};" class="box-border w-8 h-8 rounded-lg flex items-center justify-center shrink-0">
                                                     @if ($file['icon'] === 'play')
                                                         <svg class="box-border w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
