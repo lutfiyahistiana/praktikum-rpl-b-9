@@ -18,6 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil', [\App\Http\Controllers\ProfilController::class, 'update'])->name('profil.update'); //
     Route::post('/chatbot/send',   [\App\Http\Controllers\ChatbotController::class, 'sendMessage'])->name('chatbot.send');
     Route::get('/chatbot/history', [\App\Http\Controllers\ChatbotController::class, 'getHistory'])->name('chatbot.history');
+    Route::get('/materials/download/{id}', [\App\Http\Controllers\MaterialController::class, 'download'])->name('materials.download');
 });
 
 
@@ -29,6 +30,7 @@ Route::prefix('anggota-tim')->name('anggota_tim.')->middleware(['auth', 'role:an
     Route::get('/task',      [\App\Http\Controllers\Anggota\TaskController::class,        'showTask'])->name('task');
     Route::get('/task/{id}', [\App\Http\Controllers\Anggota\TaskController::class,        'show'])->name('task.detail');
     Route::post('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'storeProgress'])->name('task.progress.store');
+    Route::delete('/task/{id}/progress', [\App\Http\Controllers\Anggota\TaskController::class, 'revertProgress'])->name('task.progress.revert');
     Route::get('/materials', [\App\Http\Controllers\Anggota\MaterialController::class,    'showMaterials'])->name('materials');
 });
 
@@ -50,6 +52,8 @@ Route::prefix('ketua-tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_
     Route::get('/task',          [\App\Http\Controllers\KetuaTim\TaskController::class,       'showTask'])->name('task');
     Route::get('/task/tambah',   [\App\Http\Controllers\KetuaTim\TaskController::class,       'tambah'])->name('task.tambah');
     Route::post('/task/tambah',  [\App\Http\Controllers\KetuaTim\TaskController::class,       'store'])->name('task.store');
+    Route::delete('/task/{id}',  [\App\Http\Controllers\KetuaTim\TaskController::class,       'destroy'])->name('task.destroy');
+    Route::patch('/task/{id}/revert', [\App\Http\Controllers\KetuaTim\TaskController::class,  'revertStatus'])->name('task.revert');
     Route::get('/task/{id}',     [\App\Http\Controllers\KetuaTim\TaskController::class,       'show'])->name('task.detail');
     Route::get('/materials',     [\App\Http\Controllers\KetuaTim\MaterialController::class,   'showMaterials'])->name('materials');
 });
@@ -62,6 +66,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin,superadm
     Route::get('/manage-role', [\App\Http\Controllers\Admin\ManageRoleController::class,  'showManageRole'])->name('manageRole');
     Route::post('/manage-role', [\App\Http\Controllers\Admin\ManageRoleController::class,  'store'])->name('manageRole.store');
     Route::post('/manage-role/update', [\App\Http\Controllers\Admin\ManageRoleController::class,  'updateAccount'])->name('manageRole.update');
+    Route::post('/manage-role/delete', [\App\Http\Controllers\Admin\ManageRoleController::class,  'destroy'])->name('manageRole.destroy');
     Route::get('/materials', [\App\Http\Controllers\Admin\MaterialController::class,      'showMaterials'])->name('materials');
 });
 
@@ -73,6 +78,7 @@ Route::prefix('superadmin')->name('superadmin.')->middleware(['auth', 'role:supe
     Route::get('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,   'showManageRole'])->name('manageRole');
     Route::post('/manage-role', [\App\Http\Controllers\Superadmin\ManageRoleController::class,  'store'])->name('manageRole.store');
     Route::post('/manage-role/update', [\App\Http\Controllers\Superadmin\ManageRoleController::class, 'update'])->name('manageRole.update');
+    Route::post('/manage-role/delete', [\App\Http\Controllers\Superadmin\ManageRoleController::class, 'destroy'])->name('manageRole.destroy');
     Route::get('/materials',   [\App\Http\Controllers\Superadmin\MaterialController::class,     'showMaterials'])->name('materials');
 });
 
@@ -80,4 +86,3 @@ Route::middleware('auth')->group(function () {
     Route::get('/tasks',  [\App\Http\Controllers\TaskController::class, 'index']);
     Route::post('/tasks', [\App\Http\Controllers\TaskController::class, 'store']);
 });
-

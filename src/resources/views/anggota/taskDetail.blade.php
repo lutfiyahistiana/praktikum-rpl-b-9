@@ -49,6 +49,25 @@
                         Deadline: {{ $task->deadline ? \Carbon\Carbon::parse($task->deadline)->translatedFormat('d F Y') : '-' }}
                     </p>
 
+                    {{-- Attachment dari ketua tim --}}
+                    @if($task->attachment_link || $task->attachment_file)
+                        <div class="mt-4 space-y-2">
+                            <p class="text-sm font-semibold text-gray-700">Lampiran:</p>
+                            @if($task->attachment_link)
+                                <a href="{{ $task->attachment_link }}" target="_blank"
+                                   class="flex items-center gap-2 text-sm text-colab-blue underline">
+                                    🔗 {{ $task->attachment_link }}
+                                </a>
+                            @endif
+                            @if($task->attachment_file)
+                                <a href="{{ \App\Helpers\StorageHelper::url($task->attachment_file) }}" target="_blank"
+                                   class="flex items-center gap-2 text-sm text-colab-blue underline">
+                                    📎 Lihat File Lampiran
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+
                     {{-- Riwayat pengerjaan --}}
                     @if ($task->progresses->count() > 0)
                         <div class="mt-5">
@@ -70,7 +89,7 @@
                                                class="text-xs text-colab-blue underline">🔗 {{ $progress->link_url }}</a>
                                         @endif
                                         @if ($progress->file_path)
-                                            <a href="{{ asset('storage/' . $progress->file_path) }}" target="_blank"
+                                            <a href="{{ \App\Helpers\StorageHelper::url($progress->file_path) }}" target="_blank"
                                                class="block text-xs text-colab-blue underline mt-1">📎 Lihat File</a>
                                         @endif
                                     </div>
@@ -142,6 +161,18 @@
                         <div class="text-center py-8">
                             <p class="text-sm font-semibold text-green-600 mt-4">Tugas ini sudah selesai!</p>
                             <p class="text-xs text-gray-400 mt-1">Kerja bagus!</p>
+
+                            {{-- Tombol Batal Kirim --}}
+                            <form action="{{ route('anggota_tim.task.progress.revert', $task->id_task) }}"
+                                  method="POST" class="mt-4"
+                                  onsubmit="return confirm('Yakin ingin membatalkan pengiriman tugas ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit"
+                                        class="px-4 py-2 text-sm border border-red-400 text-red-500 rounded-lg hover:bg-red-50 transition-colors">
+                                    Batal Kirim
+                                </button>
+                            </form>
                         </div>
                     @endif
 

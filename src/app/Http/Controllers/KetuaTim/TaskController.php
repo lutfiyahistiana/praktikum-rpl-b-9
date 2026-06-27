@@ -14,7 +14,10 @@ class TaskController extends Controller
         $memberIds = $team ? $team->members()->pluck('anggota_id')->toArray() : [];
         $relevantUserIds = array_unique(array_merge([$user_id], $memberIds));
 
-        $tasksQuery = \App\Models\Task::with(['assignee'])->whereIn('assigned_to', $relevantUserIds)->orWhere('assigned_by', $user_id);
+        $tasksQuery = \App\Models\Task::with(['assignee'])->where(function ($query) use ($relevantUserIds, $user_id) {
+            $query->whereIn('assigned_to', $relevantUserIds)
+                  ->orWhere('assigned_by', $user_id);
+        });
         
         $unfinishedTasksData = (clone $tasksQuery)->whereIn('status', ['pending', 'in_progress'])->get();
         $finishedTasksData = (clone $tasksQuery)->where('status', 'done')->get();
@@ -24,21 +27,23 @@ class TaskController extends Controller
             $statusStr = ($task->deadline && $task->deadline < now()) ? 'Terlambat' : 'Berjalan';
             
             $unfinishedTasks[] = [
-                'title' => $task->title,
+                'id'       => $task->id_task,
+                'title'    => $task->title,
                 'receiver' => $task->assignee ? $task->assignee->name : 'Tidak ada',
-                'status' => $statusStr,
+                'status'   => $statusStr,
                 'deadline' => $task->deadline ? \Carbon\Carbon::parse($task->deadline)->format('j M Y') : 'Tanpa Deadline',
             ];
         }
 
         $finishedTasks = [];
         foreach ($finishedTasksData as $task) {
-            $statusStr = ($task->deadline && $task->deadline < now()) ? 'Terlambat' : 'Berjalan'; // Though it's finished, maybe it was late? The view says 'Terlambat' or 'Berjalan' even for finished tasks? Wait, let's just keep it like unfinished for the view variables.
+            $statusStr = ($task->deadline && $task->updated_at && $task->updated_at > $task->deadline) ? 'Selesai (Terlambat)' : 'Selesai';
 
             $finishedTasks[] = [
-                'title' => $task->title,
+                'id'       => $task->id_task,
+                'title'    => $task->title,
                 'receiver' => $task->assignee ? $task->assignee->name : 'Tidak ada',
-                'status' => $statusStr,
+                'status'   => $statusStr,
                 'deadline' => $task->deadline ? \Carbon\Carbon::parse($task->deadline)->format('j M Y') : 'Tanpa Deadline',
             ];
         }
@@ -88,16 +93,51 @@ class TaskController extends Controller
         }
 
         // 3. Simpan ke database
+        $attachmentPath = null;
+        if ($request->hasFile('lampiran_file')) {
+            $attachmentPath = \App\Helpers\StorageHelper::store($request->file('lampiran_file'), 'task-attachments');
+        }
+
         \App\Models\Task::create([
-            'title' => $request->judul_tugas,
-            'description' => $request->deskripsi_tugas,
-            'assigned_to' => $assignee->id_user,
-            'assigned_by' => auth()->user()->id_user,
-            'deadline' => $request->tenggat_waktu,
-            'status' => 'pending'
+            'title'           => $request->judul_tugas,
+            'description'     => $request->deskripsi_tugas,
+            'assigned_to'     => $assignee->id_user,
+            'assigned_by'     => auth()->user()->id_user,
+            'deadline'        => $request->tenggat_waktu,
+            'status'          => 'pending',
+            'attachment_file' => $attachmentPath,
+            'attachment_link' => $request->lampiran_link ?: null,
         ]);
         
         // 4. Redirect kembali dengan pesan sukses
         return redirect()->route('ketua_tim.task.tambah')->with('success', 'Tugas berhasil ditambahkan!');
+    }
+
+    public function destroy($id)
+    {
+        $task = \App\Models\Task::findOrFail($id);
+        
+        if ($task->assigned_by !== auth()->user()->id_user) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk menghapus tugas ini.');
+        }
+
+        $task->delete();
+        return redirect()->route('ketua_tim.task')->with('success', 'Tugas berhasil dihapus.');
+    }
+
+    public function revertStatus($id)
+    {
+        $task = \App\Models\Task::findOrFail($id);
+
+        if ($task->assigned_by !== auth()->user()->id_user) {
+            return redirect()->back()->with('error', 'Anda tidak memiliki akses untuk mengubah tugas ini.');
+        }
+
+        if ($task->status === 'done') {
+            $task->update(['status' => 'in_progress']);
+            return redirect()->route('ketua_tim.task')->with('success', 'Status tugas berhasil dikembalikan.');
+        }
+
+        return redirect()->back()->with('error', 'Tugas ini belum selesai.');
     }
 }

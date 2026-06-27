@@ -43,6 +43,7 @@ class TaskController extends Controller
     public function show($id)
     {
         $task = Task::where('id_task', $id)
+            ->where('assigned_to', Auth::id())
             ->with([
                 'assigner',
                 'progresses' => fn($q) => $q->latest()
@@ -73,7 +74,7 @@ class TaskController extends Controller
         // Upload file kalau ada
         $filePath = null;
         if ($request->hasFile('file_tugas')) {
-            $filePath = $request->file('file_tugas')->store('task-submissions', 'public');
+            $filePath = \App\Helpers\StorageHelper::store($request->file('file_tugas'), 'task-submissions');
         }
 
         TaskProgress::create([
@@ -90,5 +91,24 @@ class TaskController extends Controller
 
         return redirect()->route('anggota_tim.task.detail', $id)
                          ->with('success', 'Tugas berhasil diselesaikan!');
+    }
+
+    public function revertProgress($id)
+    {
+        $userId = Auth::id();
+
+        $task = Task::where('id_task', $id)
+            ->where('assigned_to', $userId)
+            ->where('status', 'done')
+            ->firstOrFail();
+
+        // Hapus progress terakhir
+        $task->progresses()->latest()->first()?->delete();
+
+        // Kembalikan status ke in_progress
+        $task->update(['status' => 'in_progress']);
+
+        return redirect()->route('anggota_tim.task.detail', $id)
+                         ->with('success', 'Pengiriman tugas berhasil dibatalkan.');
     }
 }

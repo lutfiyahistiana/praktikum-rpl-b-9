@@ -60,6 +60,18 @@ return [
             'report' => false,
         ],
 
+        'oss' => [
+            'driver'                  => 's3',
+            'key'                     => env('OSS_ACCESS_KEY_ID'),
+            'secret'                  => env('OSS_ACCESS_KEY_SECRET'),
+            'region'                  => env('OSS_REGION', 'ap-southeast-5'),
+            'bucket'                  => env('OSS_BUCKET'),
+            'url'                     => env('OSS_URL'),
+            'endpoint'                => env('OSS_ENDPOINT_URL'),
+            'use_path_style_endpoint' => false,
+            'throw'                   => false,
+        ],
+
     ],
 
     /*

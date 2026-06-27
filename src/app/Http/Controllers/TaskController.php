@@ -7,20 +7,40 @@ use App\Models\Task;
 
 class TaskController extends Controller
 {
-    // GET /tasks 
-    public function index()
+    private function addStatusLabel(Task $task): Task
     {
-        $tasks = Task::all();
-
-        foreach ($tasks as $task) {
-            if (in_array($task->status, ['pending', 'in_progress']) && now()->gt($task->deadline)) {
-                $task->update(['status' => 'in_progress']);
-            }
+        if ($task->status === 'done') {
+            $task->status_label = 'Selesai';
+        } elseif (in_array($task->status, ['pending', 'in_progress']) && $task->deadline && now()->gt($task->deadline)) {
+            $task->status_label = 'Terlambat';
+            $task->is_overdue = true;
+        } elseif ($task->status === 'in_progress') {
+            $task->status_label = 'Sedang Dikerjakan';
+            $task->is_overdue = false;
+        } else {
+            $task->status_label = 'Belum Dikerjakan';
+            $task->is_overdue = false;
         }
+        return $task;
+    }
+
+    // GET /tasks 
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+
+        if (in_array('anggota_tim', $userRoles) && !in_array('admin', $userRoles) && !in_array('superadmin', $userRoles) && !in_array('ketua_tim', $userRoles)) {
+            $tasks = Task::where('assigned_to', $user->id_user)->get();
+        } else {
+            $tasks = Task::all();
+        }
+
+        $tasks->each(fn($task) => $this->addStatusLabel($task));
 
         return response()->json([
             'success' => true,
-            'data'    => $tasks->fresh(),
+            'data'    => $tasks,
         ]);
     }
 
@@ -54,19 +74,21 @@ class TaskController extends Controller
     public function update(Request $request, $id)
     {
         $task = Task::findOrFail($id);
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+        $isAnggota = in_array('anggota_tim', $userRoles)
+            && !in_array('admin', $userRoles)
+            && !in_array('superadmin', $userRoles)
+            && !in_array('ketua_tim', $userRoles);
 
-        $request->validate([
-            'status' => 'required|in:pending,in_progress,done',
-        ]);
-
-        // Cek deadline saat mau selesaikan
-        if ($request->status === 'done' && now()->gt($task->deadline)) {
-            $task->update(['status' => 'done']);
-            return response()->json([
-                'success' => true,
-                'message' => 'Task selesai meski deadline terlewat',
-                'data'    => $task,
-            ]);
+        // Anggota hanya bisa update task miliknya ke status done
+        if ($isAnggota) {
+            if ($task->assigned_to !== $user->id_user) {
+                return response()->json(['success' => false, 'message' => 'Anda tidak memiliki akses ke tugas ini.'], 403);
+            }
+            $request->validate(['status' => 'required|in:done']);
+        } else {
+            $request->validate(['status' => 'required|in:pending,in_progress,done']);
         }
 
         $task->update(['status' => $request->status]);
@@ -74,23 +96,58 @@ class TaskController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Status task berhasil diupdate',
-            'data'    => $task,
+            'data'    => $this->addStatusLabel($task),
         ]);
     }
 
     // GET /tasks/{id} — detail task
-    public function show($id)
+    public function show(Request $request, $id)
     {
         $task = Task::findOrFail($id);
 
-        // Cek otomatis terlambat
-        if (in_array($task->status, ['pending', 'in_progress']) && now()->gt($task->deadline)) {
-            $task->update(['status' => 'in_progress']);
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+
+        if (in_array('anggota_tim', $userRoles) && !in_array('admin', $userRoles) && !in_array('superadmin', $userRoles) && !in_array('ketua_tim', $userRoles)) {
+            if ($task->assigned_to !== $user->id_user) {
+                return response()->json(['message' => 'Anda tidak memiliki akses ke tugas ini.'], 403);
+            }
         }
+
+        // Cek otomatis terlambat
+        $this->addStatusLabel($task);
 
         return response()->json([
             'success' => true,
             'data'    => $task,
+        ]);
+    }
+
+    // DELETE /tasks/{id}/revert — anggota batal kirim
+    public function revert(Request $request, $id)
+    {
+        $user = $request->user();
+        $task = Task::findOrFail($id);
+
+        if ($task->assigned_to !== $user->id_user) {
+            return response()->json(['success' => false, 'message' => 'Anda tidak memiliki akses ke tugas ini.'], 403);
+        }
+
+        if ($task->status !== 'done') {
+            return response()->json(['success' => false, 'message' => 'Tugas belum selesai, tidak perlu dibatalkan.'], 422);
+        }
+
+        // Hapus progress terakhir
+        \App\Models\TaskProgress::where('task_id', $task->id_task)
+            ->latest()
+            ->first()?->delete();
+
+        $task->update(['status' => 'in_progress']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Pengiriman tugas berhasil dibatalkan.',
+            'data'    => $this->addStatusLabel($task->fresh()),
         ]);
     }
 

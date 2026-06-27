@@ -136,12 +136,17 @@
             {{-- User Profile --}}
             <div class="relative flex items-center gap-3 ml-auto" x-data="{ open: false }">
 
-                {{-- Avatar --}}
-                <div class="w-10 h-10 rounded-full bg-colab-gray flex items-center justify-center overflow-hidden flex-shrink-0">
-                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .7.5 1.2 1.2 1.2h16.8c.7 0 1.2-.5 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/>
-                    </svg>
-                </div>
+                @if(auth()->user()->photo)
+                    <img src="{{ \App\Helpers\StorageHelper::url(auth()->user()->photo) }}"
+                         alt="Foto Profil"
+                         class="w-10 h-10 rounded-full object-cover flex-shrink-0">
+                @else
+                    <div class="w-10 h-10 rounded-full bg-colab-gray flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v1.2c0 .7.5 1.2 1.2 1.2h16.8c.7 0 1.2-.5 1.2-1.2v-1.2c0-3.2-6.4-4.8-9.6-4.8z"/>
+                        </svg>
+                    </div>
+                @endif
 
                 {{-- Name & Role --}}
                 @php
@@ -205,7 +210,12 @@
 
         {{-- ========================== MAIN CONTENT ========================== --}}
         <div>
-            <h1 class="h3 m-4 sm:m-6 lg:m-8 text-3xl font-bold text-gray-900">{{ $title }}</h1>
+            <div class="flex items-center gap-3 m-4 sm:m-6 lg:m-8">
+                @hasSection('back_button')
+                    @yield('back_button')
+                @endif
+                <h1 class="h3 text-3xl font-bold text-gray-900">{{ $title }}</h1>
+            </div>
 
             {{-- Content injected --}}
             @yield('content')

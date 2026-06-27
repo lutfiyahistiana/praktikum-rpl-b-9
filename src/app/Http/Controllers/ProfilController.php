@@ -65,17 +65,14 @@ class ProfilController extends Controller
         ]);
 
         if ($request->hasFile('photo')) {
-
-            $path = $request->file('photo')
-                ->store('profile-photos', 'public');
-
+            $path = \App\Helpers\StorageHelper::store($request->file('photo'), 'profile-photos');
             $user->photo = $path;
         }
 
-        $user->prodi = $request->prodi;
-        $user->fakultas = $request->fakultas;
-        $user->no_hp = $request->no_hp;
-        $user->username_github = $request->username_github;
+        if ($request->has('prodi'))           $user->prodi = $request->prodi;
+        if ($request->has('fakultas'))        $user->fakultas = $request->fakultas;
+        if ($request->has('no_hp'))           $user->no_hp = $request->no_hp;
+        if ($request->has('username_github')) $user->username_github = $request->username_github;
 
         $user->save();
 

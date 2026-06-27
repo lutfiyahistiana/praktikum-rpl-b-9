@@ -20,14 +20,21 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
-        // Ambil semua role milik user yang sedang login
-        $userRoles = Auth::user()->roles->pluck('role_name')->toArray();
-
-        // Cek apakah salah satu role user cocok dengan role yang diizinkan
-        foreach ($roles as $role) {
-            if (in_array($role, $userRoles)) {
-                return $next($request);
+        // Untuk request API (Sanctum), cek role dari database
+        if ($request->expectsJson() || $request->is('api/*')) {
+            $userRoles = Auth::user()->roles->pluck('role_name')->toArray();
+            foreach ($roles as $role) {
+                if (in_array($role, $userRoles)) {
+                    return $next($request);
+                }
             }
+            return response()->json(['message' => 'Anda tidak memiliki akses.'], 403);
+        }
+
+        // Untuk request Web, cek active_role dari session
+        $activeRole = session('active_role');
+        if ($activeRole && in_array($activeRole, $roles)) {
+            return $next($request);
         }
 
         // Tidak ada role yang cocok maka tolak akses

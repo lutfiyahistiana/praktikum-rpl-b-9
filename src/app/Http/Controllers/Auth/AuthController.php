@@ -26,7 +26,9 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $remember = $request->boolean('remember');
+
+        if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             $user       = User::with('roles')->find(Auth::id());
@@ -102,7 +104,8 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $activeRole = $user->roles->first()->role_name ?? 'auth_token';
+        $token = $user->createToken($activeRole)->plainTextToken;
 
         return response()->json([
             'success' => true,
@@ -156,6 +159,8 @@ class AuthController extends Controller
                 'divisi'          => $division ? $division->division->division_name : null,
                 'roles'           => $user->roles->pluck('role_name'),
                 'active_role'     => $request->user()->currentAccessToken()->name,
+                'photo'           => $user->photo,
+                'photo_url'       => $user->photo ? \App\Helpers\StorageHelper::url($user->photo) : null,
             ],
         ]);
     }

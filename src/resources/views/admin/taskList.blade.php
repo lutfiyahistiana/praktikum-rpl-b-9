@@ -8,7 +8,7 @@
             <div class="box-border flex flex-col gap-6">
 
                 <div class="box-border relative w-max">
-                    <button type="button" onclick="toggleTaskFilter()" class="box-border inline-flex items-center gap-3 p-2 rounded-md border-0 bg-transparent hover:bg-gray-50 transition-colors text-black text-[15px] font-extrabold cursor-pointer">
+                    <button type="button" onclick="toggleTaskFilter()" class="box-border inline-flex items-center gap-3 p-0 border-0 bg-transparent text-black text-[15px] font-extrabold cursor-pointer">
                         <svg class="box-border w-[22px] h-[22px]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/>
                             <circle cx="17" cy="18" r="3"/>

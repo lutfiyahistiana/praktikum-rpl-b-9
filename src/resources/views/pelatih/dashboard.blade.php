@@ -2,7 +2,7 @@
 
 @section('content')
     {{-- ========================== MAIN CONTENT ========================== --}}
-        <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+        <main class="flex-1 px-4 sm:px-6 lg:px-8 pb-6 space-y-6">
 
             {{-- ========== STATISTICS SECTION ========== --}}
             <section id="statistics-section">

@@ -20,7 +20,7 @@ class ManageRoleController extends Controller
         $divisions = Division::all();
         $teams = Team::all();
 
-        $users = User::all()->map(function ($user) {
+        $users = User::with('roles')->get()->map(function ($user) {
             $divisionMember = DivisionMember::where('anggota_id', $user->id_user)->first();
             $teamMember = TeamMember::where('anggota_id', $user->id_user)->first();
 
@@ -37,8 +37,11 @@ class ManageRoleController extends Controller
                 'divisi_id'        => $divisionMember ? $divisionMember->division_id : '',
                 'tim'              => $teamMember ? $teamMember->team->team_name : '-',
                 'tim_id'           => $teamMember ? $teamMember->team_id : '',
+                'roles'            => $user->roles->pluck('id_role')->toArray(),
             ];
         });
+
+        $rolesList = Role::all();
 
         $data = array(
             'title'          => 'Manage Role',
@@ -46,6 +49,7 @@ class ManageRoleController extends Controller
             'users'          => $users,
             'divisions'      => $divisions,
             'teams'          => $teams,
+            'rolesList'      => $rolesList,
         );
         return view('superadmin.manageRole', $data);
     }
@@ -58,12 +62,17 @@ class ManageRoleController extends Controller
             'role'     => 'required|exists:roles,id_role',
         ]);
 
+        // Prevent assigning Superadmin role (id_role = 1)
+        if ($request->role == 1) {
+            return redirect()->back()->withErrors(['role' => 'Tidak bisa menambahkan hak akses Superadmin melalui form ini.'])->withInput();
+        }
+
         // Check if user already exists
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
             $request->validate([
-                'password' => 'required|string|min:6',
+                'password' => 'required|string|min:8',
             ]);
 
             $user = User::create([
@@ -94,9 +103,16 @@ class ManageRoleController extends Controller
         $request->validate([
             'id_user' => 'required|exists:users,id_user',
             'name'    => 'required|string|max:255',
+            'roles'   => 'array',
         ]);
 
         $user = User::findOrFail($request->id_user);
+
+        // Prevent editing superadmin account
+        $isSuperadmin = UserRole::where('id_user', $user->id_user)->where('id_role', 1)->exists();
+        if ($isSuperadmin && auth()->id() !== $user->id_user) {
+            return redirect()->back()->withErrors(['error' => 'Anda tidak diizinkan mengubah data akun Superadmin lain.']);
+        }
 
         $updateData = [
             'name'            => $request->name,
@@ -131,6 +147,35 @@ class ManageRoleController extends Controller
             ]);
         }
 
+        // Update Roles
+        if ($request->has('roles')) {
+            $roles = $request->roles;
+            UserRole::where('id_user', $user->id_user)->delete();
+            foreach ($roles as $roleId) {
+                UserRole::create([
+                    'id_user' => $user->id_user,
+                    'id_role' => $roleId,
+                ]);
+            }
+        }
+
         return redirect()->route('superadmin.manageRole')->with('success', 'Data akun berhasil diperbarui');
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id_user',
+        ]);
+
+        $user = User::findOrFail($request->id_user);
+
+        TeamMember::where('anggota_id', $user->id_user)->delete();
+        DivisionMember::where('anggota_id', $user->id_user)->delete();
+        UserRole::where('id_user', $user->id_user)->delete();
+        
+        $user->delete();
+
+        return redirect()->route('superadmin.manageRole')->with('success', 'Akun berhasil dihapus!');
     }
 }

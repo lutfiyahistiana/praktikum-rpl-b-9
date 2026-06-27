@@ -9,7 +9,7 @@ class ManageRoleController extends Controller
 {
     public function showManageRole()
     {
-        $usersData = \App\Models\User::whereDoesntHave('roles', function($q) {
+        $usersData = \App\Models\User::with('roles')->whereDoesntHave('roles', function($q) {
             $q->where('roles.id_role', 1);
         })->get();
         $users = [];
@@ -43,11 +43,13 @@ class ManageRoleController extends Controller
                 'divisi_id' => $divId,
                 'tim' => $teamName,
                 'tim_id' => $teamId,
+                'roles' => $user->roles->pluck('id_role')->toArray(),
             ];
         }
 
         $teams = \App\Models\Team::all();
         $divisions = \App\Models\Division::all();
+        $rolesList = \App\Models\Role::where('id_role', '!=', 1)->get();
 
         $data = array(
             'title'         => 'Manage',
@@ -55,6 +57,7 @@ class ManageRoleController extends Controller
             'users'         => $users,
             'teams'         => $teams,
             'divisions'     => $divisions,
+            'rolesList'     => $rolesList,
             'rawUsers'      => $usersData,
         );
         return view('admin.manageRole', $data);
@@ -89,7 +92,7 @@ class ManageRoleController extends Controller
             // User doesn't exist, create it
             $request->validate([
                 'name' => 'required|string|max:100',
-                'password' => 'required|min:6',
+                'password' => 'required|min:8',
             ]);
 
             $user = \App\Models\User::create([
@@ -123,6 +126,7 @@ class ManageRoleController extends Controller
         $request->validate([
             'id_user' => 'required|exists:users,id_user',
             'name' => 'required|string|max:100',
+            'roles' => 'array',
         ]);
 
         $user = \App\Models\User::find($request->id_user);
@@ -171,6 +175,52 @@ class ManageRoleController extends Controller
             \App\Models\DivisionMember::where('anggota_id', $user->id_user)->delete();
         }
 
+        // Update Roles
+        if ($request->has('roles')) {
+            $roles = $request->roles;
+            // Prevent injecting Superadmin role
+            $roles = array_diff($roles, [1, '1']);
+            
+            // Delete all existing roles for this user except superadmin (which they shouldn't have anyway based on earlier check)
+            \Illuminate\Support\Facades\DB::table('user_roles')->where('id_user', $user->id_user)->delete();
+            
+            foreach ($roles as $roleId) {
+                \Illuminate\Support\Facades\DB::table('user_roles')->insert([
+                    'id_user' => $user->id_user,
+                    'id_role' => $roleId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
+
         return redirect()->route('admin.manageRole')->with('success', 'Data akun berhasil diperbarui!');
+    }
+
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id_user',
+        ]);
+
+        $user = \App\Models\User::find($request->id_user);
+
+        $isSuperadmin = \Illuminate\Support\Facades\DB::table('user_roles')
+            ->where('id_user', $user->id_user)
+            ->where('id_role', 1)
+            ->exists();
+
+        if ($isSuperadmin) {
+            return redirect()->back()->withErrors(['error' => 'Anda tidak diizinkan menghapus akun Superadmin.']);
+        }
+
+        // Delete dependencies first
+        \App\Models\TeamMember::where('anggota_id', $user->id_user)->delete();
+        \App\Models\DivisionMember::where('anggota_id', $user->id_user)->delete();
+        \Illuminate\Support\Facades\DB::table('user_roles')->where('id_user', $user->id_user)->delete();
+        
+        $user->delete();
+
+        return redirect()->route('admin.manageRole')->with('success', 'Akun berhasil dihapus!');
     }
 }

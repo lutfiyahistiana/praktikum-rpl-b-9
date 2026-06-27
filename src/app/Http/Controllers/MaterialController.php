@@ -9,9 +9,27 @@ use App\Models\MaterialFile;
 class MaterialController extends Controller
 {
     // GET /materials — lihat semua materi
-    public function index()
+    public function index(Request $request)
     {
-        $materials = Material::with(['uploader', 'files'])->get();
+        $user = $request->user();
+        $userRoles = $user->roles->pluck('role_name')->toArray();
+
+        $isPrivileged = array_intersect(['admin', 'superadmin', 'ketua_tim', 'pelatih'], $userRoles);
+
+        if ($isPrivileged) {
+            // Admin, superadmin, ketua_tim, pelatih lihat semua
+            $materials = Material::with(['uploader', 'files'])->get();
+        } else {
+            // Anggota hanya lihat materi divisi mereka
+            $divisionMember = \App\Models\DivisionMember::where('anggota_id', $user->id_user)->first();
+            if ($divisionMember) {
+                $materials = Material::with(['uploader', 'files'])
+                    ->where('division_id', $divisionMember->division_id)
+                    ->get();
+            } else {
+                $materials = collect();
+            }
+        }
 
         return response()->json([
             'success' => true,
@@ -50,7 +68,7 @@ class MaterialController extends Controller
         if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $fileName = $file->getClientOriginalName();
-                $filePath = $file->store('materials', 'public');
+                $filePath = \App\Helpers\StorageHelper::store($file, 'materials');
                 $fileType = $file->getClientMimeType();
 
                 MaterialFile::create([
@@ -72,12 +90,26 @@ class MaterialController extends Controller
     // DELETE /materials/{id} — hapus materi
     public function destroy($id)
     {
-        $material = Material::findOrFail($id);
-        $material->delete(); // files terhapus otomatis karena onDelete cascade
+        $material = Material::with('files')->findOrFail($id);
+
+        // Hapus file fisik dari storage sebelum hapus record
+        foreach ($material->files as $file) {
+            \App\Helpers\StorageHelper::delete($file->file_path);
+        }
+
+        $material->delete(); // DB records terhapus otomatis karena onDelete cascade
 
         return response()->json([
             'success' => true,
             'message' => 'Materi berhasil dihapus',
         ]);
+    }
+
+    // GET /materials/download/{id} — force download file materi
+    public function download($id)
+    {
+        $file = MaterialFile::findOrFail($id);
+        $url = \App\Helpers\StorageHelper::url($file->file_path);
+        return redirect($url);
     }
 }

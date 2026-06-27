@@ -233,6 +233,31 @@ public function update(Request $request, $id)
             ], 404);
         }
 
+        // Cek apakah role ada
+        $role = Role::find($id_role);
+        if (!$role) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Role tidak ditemukan'
+            ], 404);
+        }
+
+        // Cek apakah user memiliki role ini
+        if (!$user->roles->contains('id_role', $id_role)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak memiliki role ini'
+            ], 404);
+        }
+
+        // Cek agar user tidak ditinggal tanpa role
+        if ($user->roles()->count() <= 1) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak bisa menghapus role terakhir user'
+            ], 422);
+        }
+
         $user->roles()->detach($id_role);
 
         return response()->json([

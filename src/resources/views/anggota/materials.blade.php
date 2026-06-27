@@ -53,29 +53,31 @@
                             $iconColor = 'text-gray-500';
                         }
                     @endphp
-                    <a href="{{ asset('storage/' . $file->file_path) }}"
-                       target="_blank"
-                       class="flex items-center gap-3 p-3 rounded-lg hover:bg-colab-gray-light transition-colors">
-                        <div class="w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0 {{ $iconBg }}">
-                            @if ($isVideo)
-                                <svg class="w-4 h-4 {{ $iconColor }}" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M8 5v14l11-7z"/>
-                                </svg>
-                            @else
-                                <svg class="w-4 h-4 {{ $iconColor }}" fill="currentColor" viewBox="0 0 24 24">
-                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
-                                </svg>
-                            @endif
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-medium text-gray-800">{{ $file->file_name }}</p>
-                            <p class="text-xs text-colab-gray-dark uppercase">{{ strtoupper($ext) }}</p>
-                        </div>
-                        <svg class="w-4 h-4 text-colab-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                        </svg>
-                    </a>
+                    <div class="flex items-center gap-3 p-3 rounded-lg hover:bg-colab-gray-light transition-colors">
+                        <a href="{{ \App\Helpers\StorageHelper::url($file->file_path) }}" target="_blank" class="flex items-center gap-3 flex-1 min-w-0 no-underline text-inherit">
+                            <div class="w-8 h-8 flex items-center justify-center rounded-lg flex-shrink-0 {{ $iconBg }}">
+                                @if ($isVideo)
+                                    <svg class="w-4 h-4 {{ $iconColor }}" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                @else
+                                    <svg class="w-4 h-4 {{ $iconColor }}" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zM6 20V4h7v5h5v11H6z"/>
+                                    </svg>
+                                @endif
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-800">{{ $file->file_name }}</p>
+                                <p class="text-xs text-colab-gray-dark uppercase">{{ strtoupper($ext) }}</p>
+                            </div>
+                        </a>
+                        <a href="{{ route('materials.download', $file->id_material_file) }}" class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-colab-gray-dark hover:bg-[#008CFF] hover:text-white transition-colors" title="Download">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                        </a>
+                    </div>
                 @empty
                     <p class="text-sm text-gray-400 mt-2">Belum ada file untuk materi ini.</p>
                 @endforelse

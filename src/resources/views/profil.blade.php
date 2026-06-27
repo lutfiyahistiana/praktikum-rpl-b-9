@@ -24,7 +24,7 @@
                     @if($user->photo)
                         <img
                             id="preview-foto"
-                            src="{{ asset('storage/' . $user->photo) }}"
+                            src="{{ $user->photo ? \App\Helpers\StorageHelper::url($user->photo) : asset('images/person.png') }}"
                             alt="Foto Profil"
                             class="w-20 h-20 rounded-full object-cover border">
                     @else
@@ -50,16 +50,19 @@
                     </p>
 
                     <div class="mt-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Foto Profil
-                        </label>
-
                         <input
                             type="file"
                             name="photo"
                             id="input-foto"
                             accept="image/*"
-                            class="text-sm">
+                            class="hidden">
+
+                        <button type="button"
+                            onclick="document.getElementById('input-foto').click()"
+                            class="px-4 py-1.5 text-sm border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-700 transition-colors cursor-pointer">
+                            Pilih Foto
+                        </button>
+                        <span id="foto-name" class="ml-2 text-sm text-gray-400 hidden"></span>
 
                         <p id="foto-error" class="text-xs text-red-500 mt-1 hidden"></p>
                     </div>
@@ -217,6 +220,7 @@
     const previewFoto = document.getElementById('preview-foto');
     const previewInitial = document.getElementById('preview-initial');
     const fotoError = document.getElementById('foto-error');
+    const fotoName = document.getElementById('foto-name');
 
     const MAX_SIZE_MB = 2;
 
@@ -225,15 +229,24 @@
         fotoError.classList.add('hidden');
         fotoError.textContent = '';
 
-        if (!file) return;
+        if (!file) {
+            fotoName.classList.add('hidden');
+            fotoName.textContent = '';
+            return;
+        }
 
         // Validasi ukuran file
         if (file.size > MAX_SIZE_MB * 1024 * 1024) {
             fotoError.textContent = `Ukuran file maksimal ${MAX_SIZE_MB}MB.`;
             fotoError.classList.remove('hidden');
+            fotoName.classList.add('hidden');
             this.value = '';
             return;
         }
+
+        // Tampilkan nama file
+        fotoName.textContent = file.name;
+        fotoName.classList.remove('hidden');
 
         // Tampilkan preview
         const reader = new FileReader();
