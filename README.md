@@ -2,6 +2,7 @@
 Website ini memfasilitasi setiap anggota UKM Robotika UNS untuk dapat bekerja secara terstruktur. Selain itu, website ini dapat memudahkan anggota baru dalam beradaptasi di UKM.
 ## Anggota Kelompok
 | Nama | NIM | Role |
+| :---: | --- | :---: |
 | Lutfiyah Istiana | L0124022 | Project Manager & Quality Assurance |
 | Muhammad Ihza Dzikrullah | L0124024 | UI/UX Designer |
 | Rafli Ahmad | L0124030 | Frontend Developer |
@@ -165,10 +166,3 @@ Pada anggota tim memiliki akses untuk melihat tugas, mengirim tugas, dan melihat
     cmd : php artisan serve
 8. Menjalankan Frontend
     cmd: npm run dev
-
-
-    
-
-
-### Clone Repository
-
