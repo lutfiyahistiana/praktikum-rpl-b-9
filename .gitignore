@@ -29,3 +29,5 @@ src/storage/pail
 src/.phpactor.json
 src/auth.json
 /node_modules
+
+.gitignore
